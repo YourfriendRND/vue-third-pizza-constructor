@@ -67,7 +67,7 @@
                         </div>
     
                         <div class="counter counter--orange ingredients__counter">
-                          <button type="button" class="counter__button counter__button--minus" disabled>
+                          <button type="button" class="counter__button counter__button--minus">
                             <span class="visually-hidden">Меньше</span>
                           </button>
                           <input type="text" name="counter" class="counter__input" value="0">
@@ -95,7 +95,7 @@
                   <div class="pizza__wrapper">
                     <div class="pizza__filling pizza__filling--ananas"></div>
                     <div class="pizza__filling pizza__filling--bacon"></div>
-                    <div class="pizza__filling pizza__filling--cheddar"></div>
+                    <div class="pizza__filling pizza__filling--cheddar"></div>                    
                   </div>
                 </div>
               </div>
