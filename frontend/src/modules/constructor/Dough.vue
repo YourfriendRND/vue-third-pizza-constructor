@@ -3,8 +3,15 @@
         <div class="sheet">
             <h2 class="title title--small sheet__title">Выберите тесто</h2>
             <div class="sheet__content dough">
-                <label v-for="doughItem in dough" :class="`dough__input dough__input--${doughItem.value}`" :key="doughItem.id">
-                    <input type="radio" name="dought" :value="doughItem.value" class="visually-hidden">
+                <label v-for="doughItem in items" :class="`dough__input dough__input--${doughItem.value}`" :key="doughItem.id">
+                    <input 
+                        type="radio" 
+                        class="visually-hidden" 
+                        name="dough"
+                        :value="doughItem.value"
+                        :checked="doughItem.value === modelValue"
+                        @input="emit('update:modelValue', doughItem.value)"
+                    />
                     <img :src="getImage(doughItem.image)" :alt="doughItem.name" />              
                     <b>{{ doughItem.name }}</b>
                     <span>{{ doughItem.description }}</span>
@@ -15,10 +22,21 @@
 </template>
 
 <script setup>
-    import doughRow from '@/mocks/dough.json';
-    import { normalizeDough, getImage } from '@/common/helpers/normalize';
+    import { getImage } from '@/common/helpers/normalize';
+    import { defineProps, defineEmits } from "vue"
 
-    const dough = doughRow.map(normalizeDough);
+    const props = defineProps({
+        modelValue: {
+            type: String,
+            default: "light"
+        },
+        items: {
+            type: Array,
+            default: () => [],
+        }
+    })
+
+    const emit = defineEmits(["update:modelValue"]);
 
 </script>
 

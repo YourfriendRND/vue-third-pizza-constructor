@@ -7,7 +7,7 @@
           </label>
       
           <div class="content__constructor">
-              <div class="pizza pizza--foundation--small-tomato">
+              <div class="pizza" :class="`pizza--foundation--${dough}-tomato`">
                   <div class="pizza__wrapper">
                       <div class="pizza__filling pizza__filling--ananas"></div>
                       <div class="pizza__filling pizza__filling--bacon"></div>
@@ -26,7 +26,17 @@
 
 <script setup>
   import AppDrop from '@/common/components/AppDrop.vue';
-  
+  import { defineProps } from "vue"
+
+  defineProps({
+    dough: {
+      type: String,
+      default: "large",
+    }
+  });
+
+
+
   defineEmits(['drop'])
 </script>
 
@@ -207,16 +217,16 @@
     background-repeat: no-repeat;
     background-position: center;
     background-size: 100%;
-    &--foundation--big-creamy {
+    &--foundation--large-creamy {
       background-image: url("@/assets/img/foundation/big-creamy.svg");
     }
-    &--foundation--big-tomato {
+    &--foundation--large-tomato {
       background-image: url("@/assets/img/foundation/big-tomato.svg");
     }
-    &--foundation--small-creamy {
+    &--foundation--light-creamy {
       background-image: url("@/assets/img/foundation/small-creamy.svg");
     }
-    &--foundation--small-tomato {
+    &--foundation--light-tomato {
       background-image: url("@/assets/img/foundation/small-tomato.svg");
     }
   }

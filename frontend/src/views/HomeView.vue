@@ -5,7 +5,7 @@
           <div class="content__wrapper">
             <h1 class="title title--big">Конструктор пиццы</h1>
     
-            <dough />
+            <dough v-model="pizza.dough" :items="doughItems" />
     
             <diameter />
 
@@ -23,7 +23,9 @@
               </div>
             </div>
     
-            <pizza />
+            <pizza 
+              :dough="pizza.dough" 
+            />
     
           </div>
     
@@ -37,6 +39,17 @@ import Diameter from "@/modules/constructor/Diameter.vue";
 import Sauce from "@/modules/constructor/Sauce.vue";
 import IngredientList from "@/modules/constructor/IngredientList.vue";
 import Pizza from '@/modules/constructor/Pizza.vue';
+import doughRow from '@/mocks/dough.json';
+import { normalizeDough, getImage } from '@/common/helpers/normalize';
+import { ref, reactive, computed } from "vue";
+const doughItems = doughRow.map(normalizeDough);
+
+const [defaultDoughType] = doughItems;
+
+const pizza = reactive({
+  dough: defaultDoughType.value 
+});
+
 
 </script>
 
