@@ -13,12 +13,12 @@
 
     const emit = defineEmits(["drop"]);
     const onDrop = ({ dataTransfer }) => {
+        console.log(dataTransfer)
         if (!dataTransfer) {
             return;
         }
 
         const payload = dataTransfer.getData(DATA_TRANSFER_PAYLOAD);
-        
         if (payload) {
             const data = JSON.parse(payload);
             emit("drop", data);
