@@ -5,7 +5,10 @@
 </template>
 
 <style lang="scss">
-    @import "@/assets/scss/ds-system/ds.scss"; 
+    @import "@/assets/scss/ds-system/ds.scss";
+    @import '@/assets/scss/ds-system/ds.scss';
+    @import '@/assets/scss/mixins/mixins.scss';
+    
     .counter__button {
         $el: &;
         $size_icon: 50%;
