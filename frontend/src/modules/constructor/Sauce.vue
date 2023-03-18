@@ -2,18 +2,30 @@
     <div class="ingredients__sauce">
         <p>Основной соус:</p>
 
-        <label v-for="sauce in sauces" :key="sauce.id" class="radio ingredients__input">
-            <input type="radio" name="sauce" :value="sauce.value">
+        <label v-for="sauce in items" :key="sauce.id" class="radio ingredients__input">
+            <input 
+                type="radio" 
+                name="sauce" 
+                :value="sauce.value"
+                :checked="sauce.value === modelValue"
+                @input="emit('update:modelValue', sauce.value)"
+            >
             <span>{{ sauce.name }}</span>
         </label>
     </div>
 </template>
 
 <script setup>
-    import saucesRow from '@/mocks/sauces.json';
-    import { normalizeSauce } from '@/common/helpers/normalize';
-
-    const sauces = saucesRow.map(normalizeSauce);
+    defineProps({
+        modelValue: {
+            type: String,
+        },
+        items: {
+            type: Array,
+            default: () => []
+        }
+    })
+    const emit = defineEmits(["update:modelValue"])
 
 </script>
 

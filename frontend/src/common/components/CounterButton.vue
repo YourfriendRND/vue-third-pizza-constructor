@@ -1,8 +1,31 @@
 <template>
-    <button type="button" :class="`counter__button counter__button--${props.counterType}`">
-        <span class="visually-hidden">{{ props.counterText }}</span>
+    <button 
+        type="button" 
+        :class="`counter__button counter__button--${counterType}`"
+    >
+        <span class="visually-hidden">{{ counterText }}</span>
     </button>
 </template>
+
+<script setup>
+    import { defineProps } from 'vue';
+    
+    const props = defineProps({
+        counterType: {
+            type: String,
+            required: true,
+            default: "minus",
+            validator: value => value.length > 0   
+        },
+        counterText: {
+            type: String,
+            required: true,
+            default: "Меньше",
+            validator: value => value.length > 0
+        }
+    });
+
+</script>
 
 <style lang="scss">
     @import "@/assets/scss/ds-system/ds.scss";
@@ -94,20 +117,4 @@
     }
 </style>
 
-<script setup>
-    const props = defineProps({
-        counterType: {
-            type: String,
-            required: true,
-            default: "minus",
-            validator: value => value.length > 0   
-        },
-        counterText: {
-            type: String,
-            required: true,
-            default: "Меньше",
-            validator: value => value.length > 0
-        }
-    })
 
-</script>

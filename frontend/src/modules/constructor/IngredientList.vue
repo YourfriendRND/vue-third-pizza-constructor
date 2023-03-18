@@ -4,27 +4,29 @@
 
         <ul class="ingredients__list">
             
-            <li class="ingredients__item" v-for="ingridient in ingridients" :key="ingridient.id">
-                <app-drag :draggable="true" :dataTransfer="ingridient">
-                    <div :class="`filling filling--${ingridient.value}`">
+            <li class="ingredients__item" v-for="ingredient in items" :key="ingredient.id">
+                <app-drag :draggable="true" :dataTransfer="ingredient">
+                    <div :class="`filling filling--${ingredient.value}`">
                         <img
-                        :src="getImage(ingridient.image)"
-                        :alt="ingridient.name"
-                        width="30"
-                        height="30"
+                            :src="getImage(ingredient.image)"
+                            :alt="ingredient.name"
+                            width="30"
+                            height="30"
                         />
-                        {{ ingridient.name }}
+                        {{ ingredient.name }}
                     </div>
                 </app-drag>
                 <div class="counter counter--orange ingredients__counter">
                     <counter-button 
                         :counterType="CounterTypes.DecrementType"
                         :counterText="CounterValue.DecrementValue"
+                        @click="decreaseCounter(ingredient.value)"
                     />
-                    {{ counter }}
+                    {{ counter[ingredient.value].counter }}
                     <counter-button 
                         :counterType="CounterTypes.IncrementType"
                         :counterText="CounterValue.IncrementValue"
+                        @click="increaseCounter(ingredient.value)"
                     />
                 </div>        
             </li>
@@ -36,19 +38,54 @@
 <script setup>
     import CounterButton from '@/common/components/CounterButton.vue';
     import AppDrag from '@/common/components/AppDrag.vue';
-  
-    import ingridientsRow from '@/mocks/ingredients.json';
-    import { 
-        normalizeIngridient, 
-        getImage
-    } from '@/common/helpers/normalize';
+    import { getImage } from '@/common/helpers/normalize';
     import { CounterTypes, CounterValue } from '@/common/constants/index';
-    import { ref } from "vue";
-    const counter = ref(0);
-
-    const ingridients = ingridientsRow.map(normalizeIngridient);
-    
+    import { reactive, defineProps } from "vue";
  
+    const props = defineProps({
+        modelValue: {
+            type: Array,
+            default: () => [],
+        },
+        items: {
+            type: Array,
+            default: () => [],
+        },
+        counter: {
+            type: Object,
+            default: {}
+        }
+    })
+
+    const ingredientListCounter = reactive({...props.counter});
+
+    const ingredientList = reactive({
+        ingredients: [],
+        setIngredients (ingredients) {
+            this.ingredients = ingredients;
+        },
+    });
+
+    const emit = defineEmits(['update:modelValue', 'counter']);
+
+    const increaseCounter = (ingredient) => {
+        ingredientListCounter[ingredient].counter = ingredientListCounter[ingredient].counter + 1;
+        const ingredientListRow = [...ingredientList.ingredients, ingredient];
+        ingredientList.setIngredients(ingredientListRow);
+        emit('update:modelValue', ingredientList.ingredients)
+    };
+
+    const decreaseCounter = (ingredient) => {
+        ingredientListCounter[ingredient].counter = ingredientListCounter[ingredient].counter> 0 
+            ? ingredientListCounter[ingredient].counter - 1 
+            : 0;  
+        const targetIndex = ingredientList.ingredients.lastIndexOf((ingredient));
+        const ingredientListRow = targetIndex !== -1 
+            ? [...ingredientList.ingredients.slice(0, targetIndex), ...ingredientList.ingredients.slice(targetIndex + 1)]
+            : ingredientList.ingredients;
+        ingredientList.setIngredients(ingredientListRow);
+        emit('update:modelValue', ingredientList.ingredients)
+    };
 
 </script>
 
@@ -89,6 +126,7 @@
         position: relative;
         display: block;
         padding-left: 36px;
+        cursor: pointer;
         img {
             @include p_center-v;
             display: block;

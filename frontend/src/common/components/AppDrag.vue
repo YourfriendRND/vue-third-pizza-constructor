@@ -23,7 +23,6 @@
     })
 
     const onDragStart = ({ dataTransfer }) => {
-        console.log(dataTransfer)
         const data = JSON.stringify(props.dataTransfer);
         dataTransfer.setData(DATA_TRANSFER_PAYLOAD, data);
     }
