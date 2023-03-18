@@ -1,5 +1,5 @@
 import doughSizes from '../data/doughSizes';
-import ingridients from '../data/ingredients';
+import ingredients from '../data/ingredients';
 import sauces from '../data/sauces';
 import sizes from '../data/sizes';
 
@@ -8,9 +8,9 @@ export const normalizeDough = (dough) => ({
     value: doughSizes[dough.id]
 });
 
-export const normalizeIngridient = (ingridient) => ({
-    ...ingridient,
-    value: ingridients[ingridient.id]
+export const normalizeIngredient = (ingredient) => ({
+    ...ingredient,
+    value: ingredients[ingredient.id]
 });
 
 export const normalizeSauce = (sauce) => ({

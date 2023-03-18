@@ -4,8 +4,20 @@
             <h2 class="title title--small sheet__title">Выберите размер</h2>
 
             <div class="sheet__content diameter">
-                <label v-for="size in sizes" :class="`diameter__input diameter_input--${size.value}`" :key="size.id">
-                <input type="radio" name="diameter" :value="size.value" class="visually-hidden">
+                <label 
+                    class="diameter__input"
+                    v-for="size in items" 
+                    :class="`diameter_input--${size.value}`" 
+                    :key="size.id"
+                >
+                <input 
+                    type="radio" 
+                    name="diameter" 
+                    class="visually-hidden"
+                    :value="size.value"
+                    :checked="modelValue === size.value"
+                    @input="emit('update:modelValue', size.value)"
+                >
                 <span>{{ size.name }}</span>
                 </label>
             </div>
@@ -14,11 +26,20 @@
 </template>
 
 <script setup>
-    import sizesRow from '@/mocks/sizes.json';
-    import { normalizeSize } from '@/common/helpers/normalize';
+    import { defineProps, defineEmits } from 'vue';
 
+    defineProps({
+        modelValue: {
+            type: String,
+        },
+        items: {
+            type: Array,
+            default: () => [],
+        }
+    });
 
-    const sizes = sizesRow.map(normalizeSize);
+    const emit = defineEmits(["update:modelValue"]);
+
 </script>
 
 <style scoped lang="scss">

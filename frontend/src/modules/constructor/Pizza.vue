@@ -1,43 +1,55 @@
 <template>
-    <app-drop @drop="$emit('drop', $event)">
-      <div class="content__pizza">
-          <label class="input">
-              <span class="visually-hidden">Название пиццы</span>
-              <input type="text" name="pizza_name" placeholder="Введите название пиццы">
-          </label>
-      
-          <div class="content__constructor">
-              <div class="pizza" :class="`pizza--foundation--${dough}-tomato`">
-                  <div class="pizza__wrapper">
-                      <div class="pizza__filling pizza__filling--ananas"></div>
-                      <div class="pizza__filling pizza__filling--bacon"></div>
-                      <div class="pizza__filling pizza__filling--cheddar"></div>                    
-                  </div>
+  <div class="content__pizza">
+    <label class="input">
+      <span class="visually-hidden">Название пиццы</span>
+      <input type="text" name="pizza_name" placeholder="Введите название пиццы">
+    </label>
+    
+    <app-drop @drop="emit('drop', $event.value)">
+      <div class="content__constructor">
+          <div class="pizza" :class="`pizza--foundation--${dough}-${sauce}`">
+              <div class="pizza__wrapper">
+                <div
+                  v-for="ingridient in ingredientList" 
+                  class="pizza__filling "
+                  :class="`pizza__filling--${ingridient}`">
+                </div>
+              
               </div>
-          </div>
-      
-          <div class="content__result">
-              <p>Итого: 0 ₽</p>
-              <button type="button" class="button" disabled>Готовьте!</button>
           </div>
       </div>
     </app-drop>  
+    
+    <div class="content__result">
+        <p>Итого: {{ price }} ₽</p>
+        <button type="button" class="button" disabled>Готовьте!</button>
+    </div>
+  </div>
 </template>
 
 <script setup>
   import AppDrop from '@/common/components/AppDrop.vue';
-  import { defineProps } from "vue"
+  import { defineProps } from "vue";
 
   defineProps({
     dough: {
       type: String,
-      default: "large",
+    },
+    sauce: {
+      type: String,
+    },
+    ingredientList: {
+      type: Array,
+      default: () => [],
+    },
+    price: {
+      type: Number,
+      default: 0,
     }
   });
 
+  const emit = defineEmits(['drop']);
 
-
-  defineEmits(['drop'])
 </script>
 
 <style scoped lang="scss">

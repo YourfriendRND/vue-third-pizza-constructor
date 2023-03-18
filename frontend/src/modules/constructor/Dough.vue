@@ -28,7 +28,6 @@
     const props = defineProps({
         modelValue: {
             type: String,
-            default: "light"
         },
         items: {
             type: Array,
