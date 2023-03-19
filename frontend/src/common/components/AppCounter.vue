@@ -1,7 +1,8 @@
 <template>
     <button 
         type="button" 
-        :class="`counter__button counter__button--${counterType}`"
+        class="counter__button"
+        :class="`counter__button--${counterType}`"
     >
         <span class="visually-hidden">{{ counterText }}</span>
     </button>
