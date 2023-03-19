@@ -17,13 +17,13 @@
                     </div>
                 </app-drag>
                 <div class="counter counter--orange ingredients__counter">
-                    <counter-button 
+                    <app-counter 
                         :counterType="CounterTypes.DecrementType"
                         :counterText="CounterValue.DecrementValue"
                         @click="decreaseCounter(ingredient.value)"
                     />
                     {{ counter[ingredient.value].counter }}
-                    <counter-button 
+                    <app-counter 
                         :counterType="CounterTypes.IncrementType"
                         :counterText="CounterValue.IncrementValue"
                         @click="increaseCounter(ingredient.value)"
@@ -36,7 +36,7 @@
 </template>
 
 <script setup>
-    import CounterButton from '@/common/components/CounterButton.vue';
+    import AppCounter from '@/common/components/AppCounter.vue';
     import AppDrag from '@/common/components/AppDrag.vue';
     import { getImage } from '@/common/helpers/normalize';
     import { CounterTypes, CounterValue } from '@/common/constants/index';
