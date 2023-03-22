@@ -1,44 +1,44 @@
 <template>
     <main class="content">
-        <form action="#" method="post">
-    
-          <div class="content__wrapper">
-            <h1 class="title title--big">Конструктор пиццы</h1>
-    
-            <dough v-model="pizza.dough" :items="doughItems" />
-    
-            <diameter v-model="pizza.size" :items="sizes"/>
+      <form action="#" method="post">
+  
+        <div class="content__wrapper">
+          <h1 class="title title--big">Конструктор пиццы</h1>
+  
+          <dough v-model="pizza.dough" :items="doughItems" />
+  
+          <diameter v-model="pizza.size" :items="sizes"/>
 
-            <div class="content__ingredients">
-              <div class="sheet">
-                <h2 class="title title--small sheet__title">Выберите ингредиенты</h2>
-    
-                <div class="sheet__content ingredients">
-    
-                  <sauce v-model="pizza.sauce" :items="sauces" />
-    
-                  <ingredient-list 
-                    v-model="pizza.ingredients" 
-                    :counter="pizza.ingredientCounter" 
-                    :items="ingredientItems" 
-                  />
-    
-                </div>
+          <div class="content__ingredients">
+            <div class="sheet">
+              <h2 class="title title--small sheet__title">Выберите ингредиенты</h2>
+  
+              <div class="sheet__content ingredients">
+  
+                <sauce v-model="pizza.sauce" :items="sauces" />
+  
+                <ingredient-list 
+                  v-model="pizza.ingredients" 
+                  :counter="pizza.ingredientCounter" 
+                  :items="ingredientItems" 
+                />
+  
               </div>
             </div>
-    
-            <pizza 
-              :dough="pizza.dough"
-              :sauce="pizza.sauce"
-              :ingredientList="pizza.ingredients"
-              :price="price"
-              @drop="addIngredient"
-            />
-    
           </div>
-    
-        </form>
-      </main>
+  
+          <pizza 
+            :dough="pizza.dough"
+            :sauce="pizza.sauce"
+            :ingredientList="pizza.ingredients"
+            :price="price"
+            @drop="addIngredient"
+          />
+  
+        </div>
+  
+      </form>
+    </main>
 </template>
 
 <script setup>

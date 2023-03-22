@@ -1,8 +1,12 @@
 <template>
   <app-layout>
-    <home-view />
+    <router-view />
   </app-layout>
 </template>
+
+<script setup>
+  import AppLayout from './layouts/AppLayout.vue';
+</script>
 
 <style lang="scss">
 @import "@/assets/scss/app.scss";
@@ -53,8 +57,3 @@ body {
 }
 
 </style>
-
-<script setup>
-  import AppLayout from './layouts/AppLayout.vue';
-  import HomeView from './views/HomeView.vue';
-</script>
