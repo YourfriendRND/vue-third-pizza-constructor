@@ -16,7 +16,13 @@
                         {{ ingredient.name }}
                     </div>
                 </app-drag>
-                <div class="counter counter--orange ingredients__counter">
+                <app-counter-two 
+                    class="counter--orange ingredients__counter" 
+                    v-model="ingredientListCounter[ingredient.value].counter" 
+                    @click="emit('update:modelValue', ingredientListCounter)"
+                />
+
+                <!-- <div class="counter counter--orange ingredients__counter">
                     <app-counter 
                         :counterType="CounterTypes.DecrementType"
                         :counterText="CounterValue.DecrementValue"
@@ -28,7 +34,7 @@
                         :counterText="CounterValue.IncrementValue"
                         @click="increaseCounter(ingredient.value)"
                     />
-                </div>        
+                </div>         -->
             </li>
         </ul>
 
@@ -37,15 +43,17 @@
 
 <script setup>
     import AppCounter from '@/common/components/AppCounter.vue';
+    import { CounterTypes, CounterValue } from '@/common/constants/index';
+    
+    import AppCounterTwo from '../../common/components/AppCounterTwo.vue';
     import AppDrag from '@/common/components/AppDrag.vue';
     import { getImage } from '@/common/helpers/normalize';
-    import { CounterTypes, CounterValue } from '@/common/constants/index';
     import { reactive, defineProps } from "vue";
  
     const props = defineProps({
         modelValue: {
-            type: Array,
-            default: () => [],
+            type: Object,
+            default: () => {},
         },
         items: {
             type: Array,
@@ -56,7 +64,7 @@
             default: {}
         }
     })
-
+   
     const ingredientListCounter = reactive({...props.counter});
 
     const ingredientList = reactive({

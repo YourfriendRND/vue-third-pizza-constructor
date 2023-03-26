@@ -133,7 +133,7 @@
       content: '';
       vertical-align: middle;
 
-      background: url(@/assets/img/login.svg) no-repeat center;
+      background: url("@/assets/img/login.svg") no-repeat center;
       background-size: auto 50%;
     }
   }

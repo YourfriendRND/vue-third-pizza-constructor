@@ -18,7 +18,7 @@
                 <sauce v-model="pizza.sauce" :items="sauces" />
   
                 <ingredient-list 
-                  v-model="pizza.ingredients" 
+                  v-model="pizza.ingredientCounter" 
                   :counter="pizza.ingredientCounter" 
                   :items="ingredientItems" 
                 />
