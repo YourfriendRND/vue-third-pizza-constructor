@@ -10,10 +10,8 @@
 
 <style lang="scss">
 @import "@/assets/scss/app.scss";
-body {
-  justify-content: center;
-  align-items: center;
-}
+@import "@/assets/scss/scaffolding.scss";
+
 .main__wrapper {
   padding-bottom: 30px;
 

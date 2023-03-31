@@ -18,11 +18,11 @@
                 <sauce v-model="pizza.sauce" :items="sauces" />
   
                 <ingredient-list 
-                  v-model="pizza.ingredients" 
-                  :counter="pizza.ingredientCounter" 
-                  :items="ingredientItems" 
+                  v-model="pizza.ingredientCounter"
+                  :items="ingredientItems"
+                  :modelValue="pizza.ingredientCounter"
                 />
-  
+
               </div>
             </div>
           </div>
@@ -30,7 +30,7 @@
           <pizza 
             :dough="pizza.dough"
             :sauce="pizza.sauce"
-            :ingredientList="pizza.ingredients"
+            :ingredientList="pizza.ingredientCounter.ingredients"
             :price="price"
             @drop="addIngredient"
           />
@@ -67,13 +67,20 @@ const pizza = reactive({
   dough: defaultDoughType.value,
   sauce: defaultSauce.value,
   size: defaultSize.value,
-  ingredients: [],
   ingredientCounter: ingredientItems.reduce((prev, next) => {
     prev[next.value] = {
       counter: 0,
     };
     return prev;
-  }, {}),
+  }, {
+    ingredients: [],
+  }),
+  setIngredients (ingredients) {
+    this.ingredients = ingredients;
+  },
+  increaseCounter (ingredient) {
+    this.ingredientCounter[ingredient].counter = this.ingredientCounter[ingredient].counter + 1; 
+  }
 });
 
 const price = computed(() => {
@@ -81,7 +88,7 @@ const price = computed(() => {
   const targetDough = doughItems.find((item) => item.value === dough);
   const targetSauce = sauces.find((item) => item.value === sauce);
   const sizeTarget = sizes.find((item) => item.value === size);
-  const ingredientsPrice = ingredients.reduce((prev, next) =>{
+  const ingredientsPrice = pizza.ingredientCounter.ingredients.reduce((prev, next) =>{
     const targetIngredient = ingredientItems.find((item) => item.value === next);
     const ingredientItemPrice = targetIngredient ? targetIngredient.price : 0;
     return prev + ingredientItemPrice;
@@ -91,8 +98,8 @@ const price = computed(() => {
 })
 
 const addIngredient = (ingredient) => {
-  pizza.ingredients.push(ingredient);
-  pizza.ingredientCounter[ingredient].counter++
+  pizza.ingredientCounter.ingredients.push(ingredient)
+  pizza.ingredientCounter[ingredient].counter++;
 }
 
 </script>
