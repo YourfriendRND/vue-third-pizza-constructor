@@ -16,25 +16,13 @@
                         {{ ingredient.name }}
                     </div>
                 </app-drag>
-                <app-counter-two 
+                <app-counter 
                     class="counter--orange ingredients__counter" 
-                    v-model="ingredientListCounter[ingredient.value].counter" 
-                    @click="emit('update:modelValue', ingredientListCounter)"
-                />
-
-                <!-- <div class="counter counter--orange ingredients__counter">
-                    <app-counter 
-                        :counterType="CounterTypes.DecrementType"
-                        :counterText="CounterValue.DecrementValue"
-                        @click="decreaseCounter(ingredient.value)"
+                        :modelValue="ingredientList.counter[ingredient.value].counter"
+                        v-model="ingredientList.counter[ingredient.value].counter"
+                        @click="changeIngredientList(ingredient.value)"
                     />
-                    {{ counter[ingredient.value].counter }}
-                    <app-counter 
-                        :counterType="CounterTypes.IncrementType"
-                        :counterText="CounterValue.IncrementValue"
-                        @click="increaseCounter(ingredient.value)"
-                    />
-                </div>         -->
+                    
             </li>
         </ul>
 
@@ -42,58 +30,80 @@
 </template>
 
 <script setup>
-    import AppCounter from '@/common/components/AppCounter.vue';
-    import { CounterTypes, CounterValue } from '@/common/constants/index';
-    
-    import AppCounterTwo from '../../common/components/AppCounterTwo.vue';
+    import AppCounter from '../../common/components/AppCounter.vue';
     import AppDrag from '@/common/components/AppDrag.vue';
     import { getImage } from '@/common/helpers/normalize';
     import { reactive, defineProps } from "vue";
- 
+    
+    const emit = defineEmits(['update:modelValue']);
+
     const props = defineProps({
-        modelValue: {
-            type: Object,
-            default: () => {},
-        },
         items: {
             type: Array,
             default: () => [],
         },
-        counter: {
+        modelValue: {
             type: Object,
-            default: {}
-        }
+            default: () => {},
+            reactive: true,
+        },
     })
    
-    const ingredientListCounter = reactive({...props.counter});
-
     const ingredientList = reactive({
-        ingredients: [],
-        setIngredients (ingredients) {
-            this.ingredients = ingredients;
+        counter: {...props.modelValue},
+        totalIngredientCount: Object.keys(props.modelValue).reduce((prev, next) => {
+                if (next === 'ingredients') {
+                    return prev;
+                }
+                return prev + props.modelValue[next].counter;
+            }, 0),
+        setIngredientCount (count) {
+            this.totalIngredientCount = count;
         },
-    });
+        setIngredientList (ingredients) {
+            this.counter.ingredients = ingredients;
+        }
+    })
 
-    const emit = defineEmits(['update:modelValue', 'counter']);
-
-    const increaseCounter = (ingredient) => {
-        ingredientListCounter[ingredient].counter = ingredientListCounter[ingredient].counter + 1;
-        const ingredientListRow = [...ingredientList.ingredients, ingredient];
-        ingredientList.setIngredients(ingredientListRow);
-        emit('update:modelValue', ingredientList.ingredients)
-    };
-
-    const decreaseCounter = (ingredient) => {
-        ingredientListCounter[ingredient].counter = ingredientListCounter[ingredient].counter> 0 
-            ? ingredientListCounter[ingredient].counter - 1 
-            : 0;  
-        const targetIndex = ingredientList.ingredients.lastIndexOf((ingredient));
+    const getReducedIngredientList = (ingredient) => {
+        const targetIndex = ingredientList.counter.ingredients.lastIndexOf((ingredient));
         const ingredientListRow = targetIndex !== -1 
-            ? [...ingredientList.ingredients.slice(0, targetIndex), ...ingredientList.ingredients.slice(targetIndex + 1)]
-            : ingredientList.ingredients;
-        ingredientList.setIngredients(ingredientListRow);
-        emit('update:modelValue', ingredientList.ingredients)
+            ? [...ingredientList.counter.ingredients.slice(0, targetIndex), ...ingredientList.counter.ingredients.slice(targetIndex + 1)]
+            : [...ingredientList.counter.ingredients];
+        return ingredientListRow;
+    }
+
+    const changeIngredientList = (ingredient) => {
+        const prevTotalIngredintCount = ingredientList.totalIngredientCount;
+        const currentIngredientCount = Object.keys(props.modelValue).reduce((prev, next) => {
+            if (next === 'ingredients') {
+                return prev;
+            }
+            return prev + ingredientList.counter[next].counter;
+        }, 0)
+        ingredientList.setIngredientCount(currentIngredientCount);
+        if (ingredientList.counter.ingredients.length > currentIngredientCount) {
+            const ingredientListRow = getReducedIngredientList(ingredient);
+    
+            ingredientList.setIngredientList(ingredientListRow)
+            ingredientList.setIngredientCount(ingredientListRow.length)
+            emit('update:modelValue', ingredientList.counter)
+            return;
+        }
+
+        if (prevTotalIngredintCount < ingredientList.totalIngredientCount) {
+            ingredientList.setIngredientList(
+                [...ingredientList.counter.ingredients, ingredient]
+            )
+        }
+        if (prevTotalIngredintCount > ingredientList.totalIngredientCount) {
+            const ingredientListRow = getReducedIngredientList(ingredient);
+            ingredientList.setIngredientList(ingredientListRow)
+        }
+        emit('update:modelValue', ingredientList.counter)
     };
+
+
 
 </script>
 

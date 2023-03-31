@@ -24,7 +24,7 @@
                             </div>
                         </div>
 
-                        <app-counter-two class="cart-list__counter" :isOrange="true" />
+                        <app-counter class="cart-list__counter" :isOrange="true" />
 
                         <div class="cart-list__price">
                             <b>782 ₽</b>
@@ -190,7 +190,7 @@
         </main>
         <section class="footer">
             <div class="footer__more">
-                <a href="#" class="button button--border button--arrow">Хочу еще одну</a>
+                <router-link :to="{name: 'home'}" class="button button--border button--arrow">Хочу еще одну</router-link>
             </div>
             <p class="footer__text">Перейти к конструктору<br>чтоб собрать ещё одну пиццу</p>
             <div class="footer__price">
@@ -205,7 +205,7 @@
 </template>
 <script setup>
 import { getImage } from '@/common/helpers/normalize';
-import AppCounterTwo from '../common/components/AppCounterTwo.vue';
+import AppCounter from '../common/components/AppCounter.vue';
 
 </script>
 <style scoped lang="scss">
