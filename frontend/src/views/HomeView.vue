@@ -33,6 +33,8 @@
             :ingredientList="pizza.ingredientCounter.ingredients"
             :price="price"
             @drop="addIngredient"
+            @name="pizza.setName"
+            :name="pizza.pizzaName"
           />
   
         </div>
@@ -64,6 +66,7 @@ const [defaultSauce] = sauces;
 const [defaultSize] = sizes;
 
 const pizza = reactive({
+  pizzaName: '',
   dough: defaultDoughType.value,
   sauce: defaultSauce.value,
   size: defaultSize.value,
@@ -80,8 +83,12 @@ const pizza = reactive({
   },
   increaseCounter (ingredient) {
     this.ingredientCounter[ingredient].counter = this.ingredientCounter[ingredient].counter + 1; 
+  },
+  setName (name) {
+    pizza.pizzaName = name;
   }
 });
+
 
 const price = computed(() => {
   const {dough, sauce, ingredients, size} = pizza;

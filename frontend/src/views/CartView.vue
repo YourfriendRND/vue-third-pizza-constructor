@@ -11,134 +11,15 @@
             </div> -->
 
                 <ul class="cart-list sheet">
-                    <li class="cart-list__item">
-                        <div class="product cart-list__product">
-                            <img :src="getImage('product.svg')" class="product__img" width="56" height="56" alt="Капричоза">
-                            <div class="product__text">
-                                <h2>Капричоза</h2>
-                                <ul>
-                                    <li>30 см, на тонком тесте</li>
-                                    <li>Соус: томатный</li>
-                                    <li>Начинка: грибы, лук, ветчина, пармезан, ананас</li>
-                                </ul>
-                            </div>
-                        </div>
-
-                        <app-counter class="cart-list__counter" :isOrange="true" />
-
-                        <div class="cart-list__price">
-                            <b>782 ₽</b>
-                        </div>
-
-                        <div class="cart-list__button">
-                            <button type="button" class="cart-list__edit">Изменить</button>
-                        </div>
-                    </li>
-                    <li class="cart-list__item">
-                        <div class="product cart-list__product">
-                            <img :src="getImage('product.svg')" class="product__img" width="56" height="56"
-                                alt="Любимая пицца">
-                            <div class="product__text">
-                                <h2>Любимая пицца</h2>
-                                <ul>
-                                    <li>30 см, на тонком тесте</li>
-                                    <li>Соус: томатный</li>
-                                    <li>Начинка: грибы, лук, ветчина, пармезан, ананас, бекон, блю чиз</li>
-                                </ul>
-                            </div>
-                        </div>
-
-                        <div class="counter cart-list__counter">
-                            <button type="button" class="counter__button counter__button--minus">
-                                <span class="visually-hidden">Меньше</span>
-                            </button>
-                            <input type="text" name="counter" class="counter__input" value="2">
-                            <button type="button" class="counter__button counter__button--plus counter__button--orange">
-                                <span class="visually-hidden">Больше</span>
-                            </button>
-                        </div>
-
-                        <div class="cart-list__price">
-                            <b>782 ₽</b>
-                        </div>
-
-                        <div class="cart-list__button">
-                            <button type="button" class="cart-list__edit">Изменить</button>
-                        </div>
-                    </li>
+                    <order-item />
+                    <order-item />
                 </ul>
 
                 <div class="cart__additional">
                     <ul class="additional-list">
-                        <li class="additional-list__item sheet">
-                            <p class="additional-list__description">
-                                <img :src="getImage('cola.svg')" width="39" height="60" alt="Coca-Cola 0,5 литра">
-                                <span>Coca-Cola 0,5 литра</span>
-                            </p>
-
-                            <div class="additional-list__wrapper">
-                                <div class="counter additional-list__counter">
-                                    <button type="button" class="counter__button counter__button--minus">
-                                        <span class="visually-hidden">Меньше</span>
-                                    </button>
-                                    <input type="text" name="counter" class="counter__input" value="2">
-                                    <button type="button"
-                                        class="counter__button counter__button--plus counter__button--orange">
-                                        <span class="visually-hidden">Больше</span>
-                                    </button>
-                                </div>
-
-                                <div class="additional-list__price">
-                                    <b>× 56 ₽</b>
-                                </div>
-                            </div>
-                        </li>
-                        <li class="additional-list__item sheet">
-                            <p class="additional-list__description">
-                                <img :src="getImage('sauce.svg')" width="39" height="60" alt="Острый соус">
-                                <span>Острый соус</span>
-                            </p>
-
-                            <div class="additional-list__wrapper">
-                                <div class="counter additional-list__counter">
-                                    <button type="button" class="counter__button counter__button--minus">
-                                        <span class="visually-hidden">Меньше</span>
-                                    </button>
-                                    <input type="text" name="counter" class="counter__input" value="2">
-                                    <button type="button"
-                                        class="counter__button counter__button--plus counter__button--orange">
-                                        <span class="visually-hidden">Больше</span>
-                                    </button>
-                                </div>
-
-                                <div class="additional-list__price">
-                                    <b>× 30 ₽</b>
-                                </div>
-                            </div>
-                        </li>
-                        <li class="additional-list__item sheet">
-                            <p class="additional-list__description">
-                                <img :src="getImage('potato.svg')" width="39" height="60" alt="Картошка из печи">
-                                <span>Картошка из печи</span>
-                            </p>
-
-                            <div class="additional-list__wrapper">
-                                <div class="counter additional-list__counter">
-                                    <button type="button" class="counter__button counter__button--minus">
-                                        <span class="visually-hidden">Меньше</span>
-                                    </button>
-                                    <input type="text" name="counter" class="counter__input" value="2">
-                                    <button type="button"
-                                        class="counter__button counter__button--plus counter__button--orange">
-                                        <span class="visually-hidden">Больше</span>
-                                    </button>
-                                </div>
-
-                                <div class="additional-list__price">
-                                    <b>× 56 ₽</b>
-                                </div>
-                            </div>
-                        </li>
+                        <additional-order-item />
+                        <additional-order-item />
+                        <additional-order-item />
                     </ul>
                 </div>
 
@@ -204,8 +85,8 @@
     </form>
 </template>
 <script setup>
-import { getImage } from '@/common/helpers/normalize';
-import AppCounter from '../common/components/AppCounter.vue';
+import OrderItem from '@/modules/cart/OrderItem.vue';
+import AdditionalOrderItem from '../modules/cart/AdditionalOrderItem.vue';
 
 </script>
 <style scoped lang="scss">
@@ -285,134 +166,11 @@ import AppCounter from '../common/components/AppCounter.vue';
     padding: 15px 0;
 }
 
-.cart-list__item {
-    display: flex;
-    align-items: flex-start;
-
-    margin-bottom: 15px;
-    padding-right: 15px;
-    padding-bottom: 15px;
-    padding-left: 15px;
-
-    border-bottom: 1px solid rgba($green-500, 0.1);
-
-    &:last-child {
-        margin-bottom: 0;
-        padding-bottom: 0;
-
-        border-bottom: none;
-    }
-}
-
-.cart-list__product {
-    flex-grow: 1;
-
-    margin-right: auto;
-}
-
-.cart-list__counter {
-    width: 54px;
-    margin-right: auto;
-    margin-left: 20px;
-}
-
-.cart-list__price {
-    min-width: 100px;
-    margin-right: 36px;
-    margin-left: 10px;
-
-    text-align: right;
-
-    b {
-        @include b-s16-h19;
-    }
-}
-
-.cart-list__edit {
-    @include l-s11-h13;
-
-    cursor: pointer;
-    transition: 0.3s;
-
-    border: none;
-    outline: none;
-    background-color: transparent;
-
-    &:hover {
-        color: $green-500;
-    }
-
-    &:active {
-        color: $green-600;
-    }
-
-    &:focus {
-        color: $green-400;
-    }
-}
-
 .additional-list {
     @include clear-list;
 
     display: flex;
     flex-wrap: wrap;
-}
-
-.additional-list__description {
-    display: flex;
-    align-items: flex-start;
-
-    margin: 0;
-    margin-bottom: 8px;
-}
-
-.additional-list__item {
-    display: flex;
-    align-items: flex-start;
-    flex-direction: column;
-
-    width: 200px;
-    margin-right: 15px;
-    margin-bottom: 15px;
-    padding-top: 15px;
-    padding-bottom: 15px;
-
-    img {
-        margin-right: 10px;
-        margin-left: 15px;
-    }
-
-    span {
-        @include b-s14-h16;
-
-        display: inline;
-
-        width: 100px;
-        margin-right: 15px;
-    }
-}
-
-.additional-list__wrapper {
-    display: flex;
-    align-items: center;
-
-    box-sizing: border-box;
-    width: 100%;
-    margin-top: auto;
-    padding-top: 18px;
-    padding-right: 15px;
-    padding-left: 15px;
-
-    border-top: 1px solid rgba($green-500, 0.1);
-}
-
-.additional-list__counter {
-    width: 54px;
-    margin-right: auto;
-}
-
-.additional-list__price {
-    @include b-s16-h19;
 }
 
 .footer {
@@ -451,27 +209,6 @@ import AppCounter from '../common/components/AppCounter.vue';
 .footer__submit {
     button {
         padding: 16px 14px;
-    }
-}
-
-.product {
-    display: flex;
-    align-items: center;
-}
-
-.product__text {
-    margin-left: 15px;
-
-    h2 {
-        @include b-s18-h21;
-
-        margin-top: 0;
-        margin-bottom: 10px;
-    }
-
-    ul {
-        @include clear-list;
-        @include l-s11-h13;
     }
 }
 

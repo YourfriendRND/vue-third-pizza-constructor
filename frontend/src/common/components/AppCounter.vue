@@ -4,7 +4,7 @@
             @click="decreaseValue">
             <span class="visually-hidden">Меньше</span>
         </button>
-        <input type="text" name="counter" class="counter__input" :value="modelValue" disabled>
+        <input type="text" name="counter" class="counter__input" :value="counter.value" disabled>
         <button type="button" class="counter__button counter__button--plus" :class="{ 'counter__button--orange': isOrange }"
             @click="increaceValue">
             <span class="visually-hidden">Больше</span>
@@ -13,7 +13,7 @@
 </template>
 
 <script setup>
-import { defineEmits, defineProps, reactive } from 'vue';
+import { defineEmits, defineProps, reactive, watchEffect } from 'vue';
 const props = defineProps({
     modelValue: {
         type: Number,
@@ -29,6 +29,10 @@ const counter = reactive({
     value: props.modelValue
 })
 
+watchEffect(() => {
+    counter.value = props.modelValue;
+});
+
 const emit = defineEmits(['update:modelValue'])
 
 const increaceValue = () => {
@@ -40,7 +44,6 @@ const decreaseValue = () => {
     counter.value = props.modelValue - 1;
     emit('update:modelValue', counter.value)
 }
-
 
 </script>
 
