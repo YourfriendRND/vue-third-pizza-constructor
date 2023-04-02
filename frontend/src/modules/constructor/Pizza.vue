@@ -2,7 +2,13 @@
   <div class="content__pizza">
     <label class="input">
       <span class="visually-hidden">Название пиццы</span>
-      <input type="text" name="pizza_name" placeholder="Введите название пиццы">
+      <input 
+        type="text" 
+        name="pizza_name" 
+        placeholder="Введите название пиццы"
+        :value="name"
+        @input="emit('name', $event.target.value)"
+      >
     </label>
 
     <app-drop @drop="emit('drop', $event.value)">
@@ -29,6 +35,9 @@ import AppDrop from '@/common/components/AppDrop.vue';
 import { defineProps } from "vue";
 
 defineProps({
+  name: {
+    type: String,
+  },
   dough: {
     type: String,
   },
@@ -45,7 +54,7 @@ defineProps({
   }
 });
 
-const emit = defineEmits(['drop']);
+const emit = defineEmits(['drop', 'name']);
 
 </script>
 
