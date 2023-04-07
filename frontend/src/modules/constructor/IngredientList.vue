@@ -4,7 +4,7 @@
 
         <ul class="ingredients__list">
             
-            <li class="ingredients__item" v-for="ingredient in items" :key="ingredient.id">
+            <li class="ingredients__item" v-for="ingredient in dataStore.ingredients" :key="ingredient.id">
                 <app-drag :draggable="true" :dataTransfer="ingredient">
                     <div :class="`filling filling--${ingredient.value}`">
                         <img
@@ -34,20 +34,22 @@
     import AppDrag from '@/common/components/AppDrag.vue';
     import { getImage } from '@/common/helpers/normalize';
     import { reactive, defineProps } from "vue";
+    import { useDataStore } from '@/store/data';
+    import { usePizzaStore } from '@/store/pizza';
+
+    const dataStore = useDataStore(); 
+    const pizzaStore = usePizzaStore();
     
     const emit = defineEmits(['update:modelValue']);
 
     const props = defineProps({
-        items: {
-            type: Array,
-            default: () => [],
-        },
         modelValue: {
             type: Object,
             default: () => {},
             reactive: true,
         },
     })
+
    
     const ingredientList = reactive({
         counter: {...props.modelValue},

@@ -5,9 +5,9 @@
         <div class="content__wrapper">
           <h1 class="title title--big">Конструктор пиццы</h1>
   
-          <dough v-model="pizza.dough" :items="dataStore.dough" />
+          <dough />
   
-          <diameter v-model="pizza.size" :items="dataStore.sizes"/>
+          <diameter />
 
           <div class="content__ingredients">
             <div class="sheet">
@@ -15,11 +15,10 @@
   
               <div class="sheet__content ingredients">
   
-                <sauce v-model="pizza.sauce" :items="dataStore.sauces" />
+                <sauce />
   
                 <ingredient-list 
                   v-model="pizza.ingredientCounter"
-                  :items="dataStore.ingredients"
                   :modelValue="pizza.ingredientCounter"
                 />
 
@@ -60,8 +59,8 @@ const pizzaStore = usePizzaStore()
 
 const pizza = reactive({
   pizzaName: pizzaStore.name,
-  dough: pizzaStore.dough.value,
-  sauce: pizzaStore.sauce.value,
+  dough: pizzaStore.getActiveDough.value,
+  sauce: pizzaStore.getActiveSauce.value,
   size: pizzaStore.size.value,
   ingredientCounter: dataStore.ingredients.reduce((prev, next) => {
     prev[next.value] = {

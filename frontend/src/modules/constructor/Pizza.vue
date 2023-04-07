@@ -13,7 +13,7 @@
 
     <app-drop @drop="emit('drop', $event)">
       <div class="content__constructor">
-        <div class="pizza" :class="`pizza--foundation--${dough}-${sauce}`">
+        <div class="pizza" :class="`pizza--foundation--${pizzaStore.getActiveDough.value}-${pizzaStore.getActiveSauce.value}`">
           <div class="pizza__wrapper">
             <div v-for="ingridient in ingredientList" class="pizza__filling " :class="`pizza__filling--${ingridient}`">
             </div>
@@ -24,7 +24,7 @@
     </app-drop>
 
     <div class="content__result">
-      <p>Итого: {{ price }} ₽</p>
+      <p>Итого: {{ pizzaStore.price }} ₽</p>
       <button type="button" class="button" disabled>Готовьте!</button>
     </div>
   </div>
@@ -33,29 +33,15 @@
 <script setup>
 import AppDrop from '@/common/components/AppDrop.vue';
 import { defineProps } from "vue";
-import {usePizzaStore} from '@/store/pizza.js';
+import { usePizzaStore } from '@/store/pizza.js';
 
 const pizzaStore = usePizzaStore();
 
-const changeName = (name) => {
-  pizzaStore.setPizzaName(name);
-}
-
 defineProps({
-  dough: {
-    type: String,
-  },
-  sauce: {
-    type: String,
-  },
   ingredientList: {
     type: Array,
     default: () => [],
   },
-  price: {
-    type: Number,
-    default: 0,
-  }
 });
 
 const emit = defineEmits(['drop']);

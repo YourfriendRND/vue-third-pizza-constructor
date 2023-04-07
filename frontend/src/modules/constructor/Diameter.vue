@@ -4,10 +4,10 @@
             <h2 class="title title--small sheet__title">Выберите размер</h2>
 
             <div class="sheet__content diameter">
-                <label class="diameter__input" v-for="size in items" :class="`diameter_input--${size.value}`"
+                <label class="diameter__input" v-for="size in dataStore.getSizes" :class="`diameter_input--${size.value}`"
                     :key="size.id">
                     <input type="radio" name="diameter" class="visually-hidden" :value="size.value"
-                        :checked="modelValue === size.value" @input="emit('update:modelValue', size.value)">
+                        :checked="size.value === pizzaStore.size.value" @input="pizzaStore.setSize(size.id)">
                     <span :class="`diameter--${size.value}`">{{ size.name }}</span>
                 </label>
             </div>
@@ -16,19 +16,11 @@
 </template>
 
 <script setup>
-import { defineProps, defineEmits } from 'vue';
+import { useDataStore } from '@/store/data';
+import { usePizzaStore } from '@/store/pizza';
 
-defineProps({
-    modelValue: {
-        type: String,
-    },
-    items: {
-        type: Array,
-        default: () => [],
-    }
-});
-
-const emit = defineEmits(["update:modelValue"]);
+const dataStore = useDataStore(); 
+const pizzaStore = usePizzaStore();
 
 </script>
 

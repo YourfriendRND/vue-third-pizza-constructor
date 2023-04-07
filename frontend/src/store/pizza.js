@@ -15,16 +15,32 @@ export const usePizzaStore = defineStore('pizza', {
     actions: {
         setPizzaName (name) {
             this.name = name
+        },
+
+        setDough (doughId) {
+            this.doughId = doughId;
+        },
+
+        setSize (sizeId) {
+            this.sizeId = sizeId;
+        },
+
+        setSause (sauceId) {
+            this.sauceId = sauceId;
+        },
+
+        addIngredient (ingredient) {
+            this.ingredients.push(ingredient);
         }
     },
     getters: {
 
-        sauce: state => {
+        getActiveSauce: state => {
             const [defaultSauce] = dataStore.sauces;
             const targetSauce = dataStore.sauces.find((sauce) => state.sauceId === sauce.id);
             return targetSauce ? targetSauce : defaultSauce;  
         },
-        dough: state => {
+        getActiveDough: state => {
             const [defaultDoughType] = dataStore.dough;
             const targetDough = dataStore.dough.find((dough) => state.doughId === dough.id);
             return targetDough ? targetDough : defaultDoughType;
@@ -49,7 +65,7 @@ export const usePizzaStore = defineStore('pizza', {
             //   return prev + ingredientItemPrice;
             // }, 0)
           
-            return (state.dough.price + state.sauce.price + state.ingredientsPrice) * state.size.multiplier;
+            return (state.getActiveDough.price + state.getActiveSauce.price + state.ingredientsPrice) * state.size.multiplier;
         }
     },
 });
