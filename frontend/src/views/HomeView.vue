@@ -5,9 +5,9 @@
         <div class="content__wrapper">
           <h1 class="title title--big">Конструктор пиццы</h1>
   
-          <dough v-model="pizza.dough" :items="doughItems" />
+          <dough v-model="pizza.dough" :items="dataStore.dough" />
   
-          <diameter v-model="pizza.size" :items="sizes"/>
+          <diameter v-model="pizza.size" :items="dataStore.sizes"/>
 
           <div class="content__ingredients">
             <div class="sheet">
@@ -15,11 +15,11 @@
   
               <div class="sheet__content ingredients">
   
-                <sauce v-model="pizza.sauce" :items="sauces" />
+                <sauce v-model="pizza.sauce" :items="dataStore.sauces" />
   
                 <ingredient-list 
                   v-model="pizza.ingredientCounter"
-                  :items="ingredientItems"
+                  :items="dataStore.ingredients"
                   :modelValue="pizza.ingredientCounter"
                 />
 
@@ -31,9 +31,9 @@
             :dough="pizza.dough"
             :sauce="pizza.sauce"
             :ingredientList="pizza.ingredientCounter.ingredients"
-            :price="price"
+            :price="pizzaStore.price"
             @drop="addIngredient"
-            @name="pizza.setName"
+            @name="(evt) => {pizzaStore.setPizzaName(evt.target.value)}"
             :name="pizza.pizzaName"
           />
   
@@ -49,28 +49,21 @@ import Diameter from "@/modules/constructor/Diameter.vue";
 import Sauce from "@/modules/constructor/Sauce.vue";
 import IngredientList from "@/modules/constructor/IngredientList.vue";
 import Pizza from '@/modules/constructor/Pizza.vue';
-import doughRow from '@/mocks/dough.json';
-import saucesRow from '@/mocks/sauces.json';
-import ingredientsRow from '@/mocks/ingredients.json';
-import sizesRow from '@/mocks/sizes.json';
 
-import { normalizeDough, normalizeSauce, normalizeIngredient, normalizeSize } from '@/common/helpers/normalize';
-import { reactive, computed } from "vue";
-const doughItems = doughRow.map(normalizeDough);
-const sauces = saucesRow.map(normalizeSauce);
-const ingredientItems = ingredientsRow.map(normalizeIngredient);
-const sizes = sizesRow.map(normalizeSize);
+import { useDataStore } from '@/store/data.js';
+import { usePizzaStore } from '@/store/pizza.js';
 
-const [defaultDoughType] = doughItems;
-const [defaultSauce] = sauces;
-const [defaultSize] = sizes;
+import { reactive } from "vue";
+
+const dataStore = useDataStore();
+const pizzaStore = usePizzaStore()
 
 const pizza = reactive({
-  pizzaName: '',
-  dough: defaultDoughType.value,
-  sauce: defaultSauce.value,
-  size: defaultSize.value,
-  ingredientCounter: ingredientItems.reduce((prev, next) => {
+  pizzaName: pizzaStore.name,
+  dough: pizzaStore.dough.value,
+  sauce: pizzaStore.sauce.value,
+  size: pizzaStore.size.value,
+  ingredientCounter: dataStore.ingredients.reduce((prev, next) => {
     prev[next.value] = {
       counter: 0,
     };
@@ -88,21 +81,6 @@ const pizza = reactive({
     pizza.pizzaName = name;
   }
 });
-
-
-const price = computed(() => {
-  const {dough, sauce, ingredients, size} = pizza;
-  const targetDough = doughItems.find((item) => item.value === dough);
-  const targetSauce = sauces.find((item) => item.value === sauce);
-  const sizeTarget = sizes.find((item) => item.value === size);
-  const ingredientsPrice = pizza.ingredientCounter.ingredients.reduce((prev, next) =>{
-    const targetIngredient = ingredientItems.find((item) => item.value === next);
-    const ingredientItemPrice = targetIngredient ? targetIngredient.price : 0;
-    return prev + ingredientItemPrice;
-  }, 0)
-
-  return ((targetDough ? targetDough.price : 0) + (targetSauce ? targetSauce.price : 0) + ingredientsPrice) * (sizeTarget ? sizeTarget.multiplier : 1);
-})
 
 const addIngredient = (ingredient) => {
   pizza.ingredientCounter.ingredients.push(ingredient)

@@ -7,11 +7,11 @@
         name="pizza_name" 
         placeholder="Введите название пиццы"
         :value="name"
-        @input="emit('name', $event.target.value)"
+        @input=" pizzaStore.setPizzaName($event.target.value)"
       >
     </label>
 
-    <app-drop @drop="emit('drop', $event.value)">
+    <app-drop @drop="emit('drop', $event)">
       <div class="content__constructor">
         <div class="pizza" :class="`pizza--foundation--${dough}-${sauce}`">
           <div class="pizza__wrapper">
@@ -33,11 +33,15 @@
 <script setup>
 import AppDrop from '@/common/components/AppDrop.vue';
 import { defineProps } from "vue";
+import {usePizzaStore} from '@/store/pizza.js';
+
+const pizzaStore = usePizzaStore();
+
+const changeName = (name) => {
+  pizzaStore.setPizzaName(name);
+}
 
 defineProps({
-  name: {
-    type: String,
-  },
   dough: {
     type: String,
   },
@@ -54,7 +58,7 @@ defineProps({
   }
 });
 
-const emit = defineEmits(['drop', 'name']);
+const emit = defineEmits(['drop']);
 
 </script>
 
