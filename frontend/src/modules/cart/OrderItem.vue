@@ -2,13 +2,13 @@
 <template>
     <li class="cart-list__item">
         <div class="product cart-list__product">
-            <img :src="getImage('product.svg')" class="product__img" width="56" height="56" alt="Любимая пицца">
+            <img :src="getImage('product.svg')" class="product__img" width="56" height="56" :alt="order.name">
             <div class="product__text">
-                <h2>Любимая пицца</h2>
+                <h2>{{ order.name }}</h2>
                 <ul>
-                    <li>30 см, на тонком тесте</li>
-                    <li>Соус: томатный</li>
-                    <li>Начинка: грибы, лук, ветчина, пармезан, ананас, бекон, блю чиз</li>
+                    <li>{{ order.size.name }}, на {{ order.dough.value === 'large' ? 'толстом' : 'тонком'}} тесте</li>
+                    <li>Соус: {{ order.sauce.name }}</li>
+                    <li>Начинка: {{ getFillingsText(order.ingredients) }}</li>
                 </ul>
             </div>
         </div>
@@ -20,7 +20,7 @@
         />
 
         <div class="cart-list__price">
-            <b>782 ₽</b>
+            <b>{{ order.price }}</b>
         </div>
 
         <div class="cart-list__button">
@@ -33,18 +33,50 @@
 import { getImage } from '@/common/helpers/normalize';
 import { defineProps, reactive } from 'vue';
 import AppCounter from '@/common/components/AppCounter.vue'
+import { useDataStore } from '@/store/data';
+import { useCartStore } from '@/store/cart';
 
-defineProps({
+const dataStore = useDataStore();
+const cartStore = useCartStore();
+
+const props = defineProps({
     order: {
         type: Object,
-        default: {}
+        default: () => {}
     }
 });
 
-const orderCounter = reactive({
-    value: 0
-});
+const convertIngredients = (ingredients) => {
+    console.log(ingredients)
+    return ingredients.map((ingredient) => {
+        const targetIngredient = dataStore.ingredients.find((ing) => {
+            return ing.value === ingredient;
+        });
+        return targetIngredient.name;
+    }).reduce((acc, filling) => {
+        if (acc[filling]) {
+            acc[filling] = acc[filling] + 1;
+            return acc;
+        }
+        acc[filling] = 1;
+        return acc;
+    }, {});
+};
 
+const getFillingsText = (ingredients) => {
+    const filling = convertIngredients(ingredients);
+    console.log(filling)
+    return Object.keys(filling).map((item) => {
+        if (filling[item] > 1) {
+            return `${item} x${filling[item]}`;
+        }
+        return item; 
+    }).join(', ')
+}
+
+const orderCounter = reactive({
+    value: cartStore.pizzas.filter((pizza) => pizza.index === props.order.index).length,
+});
 
 </script>
 

@@ -1,8 +1,8 @@
 <template>
     <li class="additional-list__item sheet">
         <p class="additional-list__description">
-            <img :src="getImage('cola.svg')" width="39" height="60" alt="Coca-Cola 0,5 литра">
-            <span>Coca-Cola 0,5 литра</span>
+            <img :src="getImage(`${misc.image}.svg`)" width="39" height="60" :alt="misc.name">
+            <span>{{ misc.name }}</span>
         </p>
 
         <div class="additional-list__wrapper">
@@ -13,7 +13,7 @@
             />
 
             <div class="additional-list__price">
-                <b>× 56 ₽</b>
+                <b>× {{ misc.price }}</b>
             </div>
         </div>
     </li>
@@ -22,12 +22,18 @@
 <script setup>
 import AppCounter from '@/common/components/AppCounter.vue';
 import { getImage } from '@/common/helpers/normalize';
-import {reactive} from 'vue';
+import { defineProps, reactive } from 'vue';
 
 const counter = reactive({
     value: 0
 })
 
+defineProps({
+    misc: {
+        type: Object,
+        default: () => {},
+    }
+})
 
 </script>
 

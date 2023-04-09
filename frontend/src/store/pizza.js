@@ -114,7 +114,7 @@ export const usePizzaStore = defineStore('pizza', {
                 dough: this.activeDough,
                 sauce: this.activeSauce,
                 size: this.activeSize,
-                ingredientts: state.ingredients,
+                ingredients: state.ingredients,
                 price: this.totalPrice,     
             }
         },

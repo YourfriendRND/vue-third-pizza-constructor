@@ -11,15 +11,17 @@
             </div> -->
 
                 <ul class="cart-list sheet">
-                    <order-item />
-                    <order-item />
+                    <order-item v-for="order in cartStore.pizzas"
+                        :order="order"
+                    />
                 </ul>
 
                 <div class="cart__additional">
-                    <ul class="additional-list">
-                        <additional-order-item />
-                        <additional-order-item />
-                        <additional-order-item />
+                    <ul class="additional-list" >
+                        <additional-order-item 
+                        v-for="item in dataStore.getMisc" 
+                        :misc="item"
+                        />
                     </ul>
                 </div>
 
@@ -87,10 +89,11 @@
 <script setup>
 import OrderItem from '@/modules/cart/OrderItem.vue';
 import AdditionalOrderItem from '../modules/cart/AdditionalOrderItem.vue';
+import { useDataStore } from '@/store/data';
 import { useCartStore } from '@/store/cart';
 
+const dataStore = useDataStore();
 const cartStore = useCartStore();
-
 
 </script>
 <style scoped lang="scss">
