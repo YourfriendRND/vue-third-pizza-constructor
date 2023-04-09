@@ -9,7 +9,7 @@
                         class="visually-hidden" 
                         name="dough"
                         :value="doughItem.value"
-                        :checked="doughItem.value === pizzaStore.getActiveDough.value"
+                        :checked="doughItem.value === pizzaStore.activeDough.value"
                         @input="pizzaStore.setDough(doughItem.id)"
                     />
                     <img :src="getImage(doughItem.image)" :alt="doughItem.name" />              

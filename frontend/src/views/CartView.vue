@@ -87,6 +87,10 @@
 <script setup>
 import OrderItem from '@/modules/cart/OrderItem.vue';
 import AdditionalOrderItem from '../modules/cart/AdditionalOrderItem.vue';
+import { useCartStore } from '@/store/cart';
+
+const cartStore = useCartStore();
+
 
 </script>
 <style scoped lang="scss">

@@ -7,7 +7,7 @@
                 <label class="diameter__input" v-for="size in dataStore.getSizes" :class="`diameter_input--${size.value}`"
                     :key="size.id">
                     <input type="radio" name="diameter" class="visually-hidden" :value="size.value"
-                        :checked="size.value === pizzaStore.size.value" @input="pizzaStore.setSize(size.id)">
+                        :checked="size.value === pizzaStore.activeSize.value" @input="pizzaStore.setSize(size.id)">
                     <span :class="`diameter--${size.value}`">{{ size.name }}</span>
                 </label>
             </div>

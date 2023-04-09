@@ -7,7 +7,7 @@
                 type="radio" 
                 name="sauce" 
                 :value="sauce.value"
-                :checked="sauce.value === pizzaStore.getActiveSauce.value"
+                :checked="sauce.value === pizzaStore.activeSauce.value"
                 @input="pizzaStore.setSause(sauce.id)"
             >
             <span>{{ sauce.name }}</span>
