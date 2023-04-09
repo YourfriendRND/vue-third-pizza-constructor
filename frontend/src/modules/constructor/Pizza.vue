@@ -6,16 +6,16 @@
         type="text" 
         name="pizza_name" 
         placeholder="Введите название пиццы"
-        :value="name"
+        :value="pizzaStore.name"
         @input=" pizzaStore.setPizzaName($event.target.value)"
       >
     </label>
 
-    <app-drop @drop="emit('drop', $event)">
+    <app-drop @drop="pizzaStore.setIngredients($event)">
       <div class="content__constructor">
-        <div class="pizza" :class="`pizza--foundation--${dough}-${sauce}`">
+        <div class="pizza" :class="`pizza--foundation--${pizzaStore.activeDough.value}-${pizzaStore.activeSauce.value}`">
           <div class="pizza__wrapper">
-            <div v-for="ingridient in ingredientList" class="pizza__filling " :class="`pizza__filling--${ingridient}`">
+            <div v-for="ingredient in pizzaStore.ingredients" class="pizza__filling " :class="`pizza__filling--${ingredient}`">
             </div>
 
           </div>
@@ -24,41 +24,34 @@
     </app-drop>
 
     <div class="content__result">
-      <p>Итого: {{ price }} ₽</p>
-      <button type="button" class="button" disabled>Готовьте!</button>
+      <p>Итого: {{ pizzaStore.totalPrice }} ₽</p>
+      <button 
+        type="button" 
+        class="button" 
+        :disabled="!pizzaStore.isReadyToOrder"
+        @click="readyButtonClick"
+        >
+          Готовьте!
+        </button>
     </div>
   </div>
 </template>
 
 <script setup>
 import AppDrop from '@/common/components/AppDrop.vue';
-import { defineProps } from "vue";
-import {usePizzaStore} from '@/store/pizza.js';
+import { usePizzaStore } from '@/store/pizza.js';
+import { useCartStore } from '@/store/cart';
+import { useRouter } from 'vue-router';
 
 const pizzaStore = usePizzaStore();
+const cartStore = useCartStore();
+const router = useRouter();
 
-const changeName = (name) => {
-  pizzaStore.setPizzaName(name);
-}
-
-defineProps({
-  dough: {
-    type: String,
-  },
-  sauce: {
-    type: String,
-  },
-  ingredientList: {
-    type: Array,
-    default: () => [],
-  },
-  price: {
-    type: Number,
-    default: 0,
-  }
-});
-
-const emit = defineEmits(['drop']);
+const readyButtonClick = () => {
+  cartStore.addPizza(pizzaStore.pizza);
+  pizzaStore.setInitPizza();
+  router.push('/cart')
+};
 
 </script>
 

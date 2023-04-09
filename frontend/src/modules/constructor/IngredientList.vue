@@ -4,8 +4,10 @@
 
         <ul class="ingredients__list">
             
-            <li class="ingredients__item" v-for="ingredient in items" :key="ingredient.id">
-                <app-drag :draggable="true" :dataTransfer="ingredient">
+            <li class="ingredients__item" v-for="ingredient in dataStore.ingredients" :key="ingredient.id">
+                <app-drag :draggable="true" :dataTransfer="{type: 'increase', payload: {
+                    ingredient: ingredient.value
+                }}">
                     <div :class="`filling filling--${ingredient.value}`">
                         <img
                             :src="getImage(ingredient.image)"
@@ -18,11 +20,9 @@
                 </app-drag>
                 <app-counter 
                     class="counter--orange ingredients__counter" 
-                        :modelValue="ingredientList.counter[ingredient.value].counter"
-                        v-model="ingredientList.counter[ingredient.value].counter"
-                        @click="changeIngredientList(ingredient.value)"
-                    />
-                    
+                    :modelValue="pizzaStore.ingredients.filter((ing) => ing === ingredient.value).length"
+                    v-model="ingredientList.counter[ingredient.value]"  
+                />  
             </li>
         </ul>
 
@@ -33,77 +33,44 @@
     import AppCounter from '../../common/components/AppCounter.vue';
     import AppDrag from '@/common/components/AppDrag.vue';
     import { getImage } from '@/common/helpers/normalize';
-    import { reactive, defineProps } from "vue";
-    
-    const emit = defineEmits(['update:modelValue']);
+    import { reactive, watch } from "vue";
+    import { useDataStore } from '@/store/data';
+    import { usePizzaStore } from '@/store/pizza';
 
-    const props = defineProps({
-        items: {
-            type: Array,
-            default: () => [],
-        },
-        modelValue: {
-            type: Object,
-            default: () => {},
-            reactive: true,
-        },
-    })
-   
+    const dataStore = useDataStore(); 
+    const pizzaStore = usePizzaStore();
+    
     const ingredientList = reactive({
-        counter: {...props.modelValue},
-        totalIngredientCount: Object.keys(props.modelValue).reduce((prev, next) => {
-                if (next === 'ingredients') {
-                    return prev;
-                }
-                return prev + props.modelValue[next].counter;
-            }, 0),
-        setIngredientCount (count) {
-            this.totalIngredientCount = count;
-        },
-        setIngredientList (ingredients) {
-            this.counter.ingredients = ingredients;
-        }
-    })
+        counter: pizzaStore.ingredientsCounter,
+    });
 
-    const getReducedIngredientList = (ingredient) => {
-        const targetIndex = ingredientList.counter.ingredients.lastIndexOf((ingredient));
-        const ingredientListRow = targetIndex !== -1 
-            ? [...ingredientList.counter.ingredients.slice(0, targetIndex), ...ingredientList.counter.ingredients.slice(targetIndex + 1)]
-            : [...ingredientList.counter.ingredients];
-        return ingredientListRow;
-    }
+    watch(ingredientList.counter, () => {
+        console.log('drop')
+        Object.keys(ingredientList.counter).forEach((ingredientName) => {
+            const storeIngredientCount = pizzaStore.ingredients.filter((ing) => ing === ingredientName).length;
+            const localIgredientCount = ingredientList.counter[ingredientName];
 
-    const changeIngredientList = (ingredient) => {
-        const prevTotalIngredintCount = ingredientList.totalIngredientCount;
-        const currentIngredientCount = Object.keys(props.modelValue).reduce((prev, next) => {
-            if (next === 'ingredients') {
-                return prev;
+            if (storeIngredientCount && localIgredientCount > storeIngredientCount) {
+                pizzaStore.setIngredients({type: 'increase', payload: {
+                    ingredient: ingredientName
+                }})
             }
-            return prev + ingredientList.counter[next].counter;
-        }, 0)
-        ingredientList.setIngredientCount(currentIngredientCount);
-        if (ingredientList.counter.ingredients.length > currentIngredientCount) {
-            const ingredientListRow = getReducedIngredientList(ingredient);
-    
-            ingredientList.setIngredientList(ingredientListRow)
-            ingredientList.setIngredientCount(ingredientListRow.length)
-            emit('update:modelValue', ingredientList.counter)
-            return;
-        }
 
-        if (prevTotalIngredintCount < ingredientList.totalIngredientCount) {
-            ingredientList.setIngredientList(
-                [...ingredientList.counter.ingredients, ingredient]
-            )
-        }
-        if (prevTotalIngredintCount > ingredientList.totalIngredientCount) {
-            const ingredientListRow = getReducedIngredientList(ingredient);
-            ingredientList.setIngredientList(ingredientListRow)
-        }
-        emit('update:modelValue', ingredientList.counter)
-    };
+            if (storeIngredientCount && localIgredientCount < storeIngredientCount) {
+                pizzaStore.setIngredients({type: 'decrease', payload: {
+                    ingredient: ingredientName
+                }})
+            }
 
+            if (!storeIngredientCount && localIgredientCount) {
+                pizzaStore.setIngredients({type: 'increase', payload: {
+                    ingredient: ingredientName
+                }})
+            }
 
+        })
+
+    })
 
 </script>
 

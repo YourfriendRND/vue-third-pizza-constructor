@@ -5,9 +5,9 @@
         <div class="content__wrapper">
           <h1 class="title title--big">Конструктор пиццы</h1>
   
-          <dough v-model="pizza.dough" :items="dataStore.dough" />
+          <dough />
   
-          <diameter v-model="pizza.size" :items="dataStore.sizes"/>
+          <diameter />
 
           <div class="content__ingredients">
             <div class="sheet">
@@ -15,27 +15,15 @@
   
               <div class="sheet__content ingredients">
   
-                <sauce v-model="pizza.sauce" :items="dataStore.sauces" />
+                <sauce />
   
-                <ingredient-list 
-                  v-model="pizza.ingredientCounter"
-                  :items="dataStore.ingredients"
-                  :modelValue="pizza.ingredientCounter"
-                />
+                <ingredient-list />
 
               </div>
             </div>
           </div>
   
-          <pizza 
-            :dough="pizza.dough"
-            :sauce="pizza.sauce"
-            :ingredientList="pizza.ingredientCounter.ingredients"
-            :price="pizzaStore.price"
-            @drop="addIngredient"
-            @name="(evt) => {pizzaStore.setPizzaName(evt.target.value)}"
-            :name="pizza.pizzaName"
-          />
+          <pizza />
   
         </div>
   
@@ -49,43 +37,6 @@ import Diameter from "@/modules/constructor/Diameter.vue";
 import Sauce from "@/modules/constructor/Sauce.vue";
 import IngredientList from "@/modules/constructor/IngredientList.vue";
 import Pizza from '@/modules/constructor/Pizza.vue';
-
-import { useDataStore } from '@/store/data.js';
-import { usePizzaStore } from '@/store/pizza.js';
-
-import { reactive } from "vue";
-
-const dataStore = useDataStore();
-const pizzaStore = usePizzaStore()
-
-const pizza = reactive({
-  pizzaName: pizzaStore.name,
-  dough: pizzaStore.dough.value,
-  sauce: pizzaStore.sauce.value,
-  size: pizzaStore.size.value,
-  ingredientCounter: dataStore.ingredients.reduce((prev, next) => {
-    prev[next.value] = {
-      counter: 0,
-    };
-    return prev;
-  }, {
-    ingredients: [],
-  }),
-  setIngredients (ingredients) {
-    this.ingredients = ingredients;
-  },
-  increaseCounter (ingredient) {
-    this.ingredientCounter[ingredient].counter = this.ingredientCounter[ingredient].counter + 1; 
-  },
-  setName (name) {
-    pizza.pizzaName = name;
-  }
-});
-
-const addIngredient = (ingredient) => {
-  pizza.ingredientCounter.ingredients.push(ingredient)
-  pizza.ingredientCounter[ingredient].counter++;
-}
 
 </script>
 

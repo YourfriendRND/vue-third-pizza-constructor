@@ -12,6 +12,10 @@ export const useCartStore = defineStore('cart', {
         pizzas: [],
         misc: [],
     }),
-    actions: {},
+    actions: {
+      addPizza (pizza) {
+        this.pizzas = [...this.pizzas, pizza];
+      }
+    },
     getters: {},
 });
