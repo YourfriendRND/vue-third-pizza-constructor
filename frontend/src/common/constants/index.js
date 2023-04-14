@@ -9,3 +9,9 @@ export const CounterValue = {
     DecrementValue: "Меньше",
     IncrementValue: "Больше",
 }
+
+export const DeliveryTypes = {
+    Self: "self",
+    New: "new",
+    Home: "home"
+};

@@ -15,8 +15,8 @@
         <app-counter 
             class="counter cart-list__counter" 
             :isOrange="true" 
-            :modelValue="orderCounter.value"
-            v-model="orderCounter.value"
+            :modelValue="orderCounter.pizza.count"
+            v-model="orderCounter.pizza.count"
         />
 
         <div class="cart-list__price">
@@ -31,7 +31,7 @@
 
 <script setup>
 import { getImage } from '@/common/helpers/normalize';
-import { defineProps, reactive } from 'vue';
+import { defineProps, reactive, watch } from 'vue';
 import AppCounter from '@/common/components/AppCounter.vue'
 import { useDataStore } from '@/store/data';
 import { useCartStore } from '@/store/cart';
@@ -75,7 +75,14 @@ const getFillingsText = (ingredients) => {
 }
 
 const orderCounter = reactive({
-    value: cartStore.pizzas.filter((pizza) => pizza.index === props.order.index).length,
+    pizza: {
+        index: props.order.index,
+        count: props.order.count,
+    },
+});
+
+watch(orderCounter.pizza, () => {
+    cartStore.updatePizza({...orderCounter.pizza});
 });
 
 </script>

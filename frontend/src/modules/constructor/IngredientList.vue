@@ -45,7 +45,6 @@
     });
 
     watch(ingredientList.counter, () => {
-        console.log('drop')
         Object.keys(ingredientList.counter).forEach((ingredientName) => {
             const storeIngredientCount = pizzaStore.ingredients.filter((ing) => ing === ingredientName).length;
             const localIgredientCount = ingredientList.counter[ingredientName];

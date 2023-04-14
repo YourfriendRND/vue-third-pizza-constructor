@@ -8,8 +8,8 @@
         <div class="additional-list__wrapper">
             <app-counter class="counter additional-list__counter"
                 :isOrange="true"
-                :modelValue="counter.value"
-                v-model="counter.value"
+                :modelValue="counter.misc.count"
+                v-model="counter.misc.count"
             />
 
             <div class="additional-list__price">
@@ -22,18 +22,29 @@
 <script setup>
 import AppCounter from '@/common/components/AppCounter.vue';
 import { getImage } from '@/common/helpers/normalize';
-import { defineProps, reactive } from 'vue';
+import { defineProps, reactive, watch } from 'vue';
+import { useCartStore } from "@/store/cart";
 
-const counter = reactive({
-    value: 0
-})
+const cartStore = useCartStore();
 
-defineProps({
+const props = defineProps({
     misc: {
         type: Object,
         default: () => {},
     }
-})
+});
+
+const counter = reactive({
+    misc: {
+        name: props.misc.name,
+        count: props.misc.count
+    }
+});
+
+watch(counter.misc, () => {
+    console.log(counter.misc)
+    cartStore.updateMisc({...counter.misc});
+});
 
 </script>
 
