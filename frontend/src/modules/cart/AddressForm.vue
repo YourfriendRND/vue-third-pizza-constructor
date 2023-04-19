@@ -5,16 +5,28 @@
             <label class="cart-form__select">
                 <span class="cart-form__label">Получение заказа:</span>
 
-                <select name="delivery" class="select" @change="cartStore.setDeliveryType($event.target.value)">
-                    <option :value=DeliveryTypes.Self :selected="cartStore.deliveryType === DeliveryTypes.Self">Заберу сам</option>
-                    <option :value="DeliveryTypes.New" :selected="cartStore.deliveryType === DeliveryTypes.New">Новый адрес</option>
-                    <option :value="DeliveryTypes.Home" :selected="cartStore.deliveryType === DeliveryTypes.Home">Дом</option>
+                <select name="delivery" class="select" @change="changeDelivery">
+                    <option :value="DeliveryTypes.Self" @click="setDeliveryAddressId" :selected="DeliveryTypes.Self === cartStore.deliveryType" id="0">Заберу сам</option>
+                    <option :value="DeliveryTypes.New" @click="setDeliveryAddressId" :selected="DeliveryTypes.New === cartStore.deliveryType" id="0">Новый адрес</option>
+                    <option v-for="address in profileStore.addresses"
+                        :selected="DeliveryTypes.Address === cartStore.deliveryType && address.id === Number(profileStore.currentAddressId)" 
+                        @click="setDeliveryAddressId" 
+                        :id="address.id" 
+                        :value="DeliveryTypes.Address">
+                        {{ address.name }}
+                    </option>
                 </select>
             </label>
 
             <label class="input input--big-label">
                 <span>Контактный телефон:</span>
-                <input type="text" name="tel" placeholder="+7 999-999-99-99">
+                <input 
+                    type="text" 
+                    name="tel" 
+                    placeholder="+7 999-999-99-99" 
+                    @input="cartStore.setPhone($event.target.value)"
+                    :value="cartStore.phone"
+                >
             </label>
 
             <div class="cart-form__address">
@@ -23,21 +35,39 @@
                 <div class="cart-form__input">
                     <label class="input">
                         <span>Улица*</span>
-                        <input type="text" name="street" :disabled="cartStore.deliveryType === DeliveryTypes.Self || cartStore.deliveryType === DeliveryTypes.Home">
+                        <input 
+                            type="text" 
+                            name="street" 
+                            :disabled="cartStore.deliveryType !== DeliveryTypes.New"
+                            :value="cartStore.deliveryType !== DeliveryTypes.New ? profileStore.street : cartStore.address.street"
+                            @input="cartStore.setStreet($event.target.value)"
+                        >
                     </label>
                 </div>
 
                 <div class="cart-form__input cart-form__input--small">
                     <label class="input">
                         <span>Дом*</span>
-                        <input type="text" name="house" :disabled="cartStore.deliveryType === DeliveryTypes.Self || cartStore.deliveryType === DeliveryTypes.Home">
+                        <input 
+                            type="text" 
+                            name="house" 
+                            :disabled="cartStore.deliveryType !== DeliveryTypes.New"
+                            :value="cartStore.deliveryType !== DeliveryTypes.New ? profileStore.building : cartStore.address.building"
+                            @input="cartStore.setBuilding($event.target.value)"
+                        >
                     </label>
                 </div>
 
                 <div class="cart-form__input cart-form__input--small">
                     <label class="input">
                         <span>Квартира</span>
-                        <input type="text" name="apartment" :disabled="cartStore.deliveryType === DeliveryTypes.Self || cartStore.deliveryType === DeliveryTypes.Home">
+                        <input 
+                            type="text" 
+                            name="apartment" 
+                            :disabled="cartStore.deliveryType !== DeliveryTypes.New"
+                            :value="cartStore.deliveryType !== DeliveryTypes.New ? profileStore.flat : cartStore.address.flat"
+                            @input="cartStore.setFlat($event.target.value)"
+                        >
                     </label>
                 </div>
             </div>
@@ -48,9 +78,21 @@
 <script setup>
 import { DeliveryTypes } from '@/common/constants';
 import { useCartStore } from '@/store/cart';
+import { useProfileStore } from '@/store/profile';
 
 const cartStore = useCartStore();
+const profileStore = useProfileStore();
 
+const changeDelivery = ($event) => {
+    cartStore.setDeliveryType($event.target.value);
+};
+
+const setDeliveryAddressId = ($event) => {
+    profileStore.setAddressId($event.target.id);
+    cartStore.setStreet(profileStore.street);
+    cartStore.setFlat(profileStore.flat);
+    cartStore.setBuilding(profileStore.building);
+};
 
 </script>
 

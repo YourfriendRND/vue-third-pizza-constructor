@@ -42,7 +42,6 @@ const counter = reactive({
 });
 
 watch(counter.misc, () => {
-    console.log(counter.misc)
     cartStore.updateMisc({...counter.misc});
 });
 

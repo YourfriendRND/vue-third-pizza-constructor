@@ -24,7 +24,7 @@
         </div>
 
         <div class="cart-list__button">
-            <button type="button" class="cart-list__edit">Изменить</button>
+            <button type="button" class="cart-list__edit" @click="changePizzaOrder">Изменить</button>
         </div>
     </li>
 </template>
@@ -35,9 +35,13 @@ import { defineProps, reactive, watch } from 'vue';
 import AppCounter from '@/common/components/AppCounter.vue'
 import { useDataStore } from '@/store/data';
 import { useCartStore } from '@/store/cart';
+import { usePizzaStore } from '@/store/pizza';
+import { useRouter } from 'vue-router';
 
 const dataStore = useDataStore();
 const cartStore = useCartStore();
+const pizzaStore = usePizzaStore();
+const router = useRouter();
 
 const props = defineProps({
     order: {
@@ -46,8 +50,20 @@ const props = defineProps({
     }
 });
 
+const changePizzaOrder = () => {
+    pizzaStore.setPizza({
+        index: props.order.index,
+        name: props.order.name,
+        sauceId: props.order.sauce.id,
+        doughId: props.order.dough.id,
+        sizeId: props.order.size.id,
+        ingredients: props.order.ingredients,
+        price: props.order.price,
+    })
+    router.push({name: 'home'});
+};
+
 const convertIngredients = (ingredients) => {
-    console.log(ingredients)
     return ingredients.map((ingredient) => {
         const targetIngredient = dataStore.ingredients.find((ing) => {
             return ing.value === ingredient;
@@ -65,7 +81,6 @@ const convertIngredients = (ingredients) => {
 
 const getFillingsText = (ingredients) => {
     const filling = convertIngredients(ingredients);
-    console.log(filling)
     return Object.keys(filling).map((item) => {
         if (filling[item] > 1) {
             return `${item} x${filling[item]}`;

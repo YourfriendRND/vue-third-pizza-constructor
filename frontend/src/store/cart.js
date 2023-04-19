@@ -5,7 +5,7 @@ const dataStore = useDataStore();
 
 export const useCartStore = defineStore('cart', {
     state: () => ({
-        deliveryType: DeliveryTypes.New,
+        deliveryType: DeliveryTypes.Self,
         phone: "",
         address: {
           street: "",
@@ -18,7 +18,12 @@ export const useCartStore = defineStore('cart', {
     }),
     actions: {
       addPizza (pizza) {
-        this.pizzas = [...this.pizzas, { ...pizza, count: 1 }];
+        const isExistPizzaIndex = this.pizzas.findIndex((existPizza) => existPizza.index === pizza.index);
+        if (isExistPizzaIndex === -1) {
+          this.pizzas = [...this.pizzas, { ...pizza, count: 1 }];
+        } else {
+          this.pizzas = [...this.pizzas.slice(0, isExistPizzaIndex), {...pizza, count: this.pizzas[isExistPizzaIndex].count}, ...this.pizzas.slice(isExistPizzaIndex + 1)]
+        }
       },
       updatePizza (updatedPizza) {
         this.pizzas = this.pizzas.map((pizza) => {
@@ -44,6 +49,18 @@ export const useCartStore = defineStore('cart', {
       },
       setDeliveryType (type) {
         this.deliveryType = type;
+      },
+      setPhone (phone) {
+        this.phone = phone;
+      },
+      setStreet (street) {
+        this.address.street = street;
+      },
+      setBuilding (building) {
+        this.address.building = building;
+      },
+      setFlat (flat) {
+        this.address.flat = flat;
       }
     },
     getters: {
@@ -58,5 +75,18 @@ export const useCartStore = defineStore('cart', {
         }, 0);
         return miscPrice + pizzasPrice;
       },
+      isPhoneNumberCorrect (state) {
+        return new RegExp(/^((\+7|7|8)+([0-9]){10})$/).test(state.phone);
+      },
+
+      isOrderAvailabale (state) {
+        if (state.deliveryType === DeliveryTypes.Self && this.isPhoneNumberCorrect) {
+          return true;
+        }
+        if (state.isPhoneNumberCorrect && state.address.building && state.address.street) {
+          return true;
+        }
+        return false;
+      }
     },
 });

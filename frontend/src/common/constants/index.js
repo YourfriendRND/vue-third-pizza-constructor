@@ -13,5 +13,5 @@ export const CounterValue = {
 export const DeliveryTypes = {
     Self: "self",
     New: "new",
-    Home: "home"
+    Address: 'address'
 };

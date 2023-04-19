@@ -41,7 +41,7 @@
             </div>
 
             <div class="footer__submit">
-                <button type="submit" class="button">Оформить заказ</button>
+                <button type="submit" class="button" :disabled="!cartStore.isOrderAvailabale">Оформить заказ</button>
             </div>
         </section>
     </form>
