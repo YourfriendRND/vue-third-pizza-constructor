@@ -1,5 +1,5 @@
 <template>
-    <form action="test.html" method="post" class="address-form address-form--opened sheet">
+    <form action="test.html" method="post" class="address-form address-form--opened sheet" @submit.prevent>
         <div class="address-form__header">
             <b>{{ profileStore.editableAddress.name }}</b>
         </div>
@@ -10,9 +10,10 @@
                     <span>Название адреса*</span>
                     <input 
                         type="text" 
-                        name="addr-name" 
+                        name="name" 
                         placeholder="Введите название адреса"
                         :value="profileStore.editableAddress.name"
+                        @input="profileStore.setEditableField($event.target.value, $event.target.name)"
                         required>
                 </label>
             </div>
@@ -21,9 +22,10 @@
                     <span>Улица*</span>
                     <input 
                         type="text" 
-                        name="addr-street" 
+                        name="street" 
                         placeholder="Введите название улицы" 
                         :value="profileStore.editableAddress.street"
+                        @input="profileStore.setEditableField($event.target.value, $event.target.name)"
                         required>
                 </label>
             </div>
@@ -32,9 +34,10 @@
                     <span>Дом*</span>
                     <input 
                         type="text" 
-                        name="addr-house" 
+                        name="building" 
                         placeholder="Введите номер дома" 
                         :value="profileStore.editableAddress.building"
+                        @input="profileStore.setEditableField($event.target.value, $event.target.name)"
                         required>
                 </label>
             </div>
@@ -43,9 +46,10 @@
                     <span>Квартира</span>
                     <input 
                         type="text" 
-                        name="addr-apartment" 
+                        name="flat" 
                         placeholder="Введите № квартиры"
                         :value="profileStore.editableAddress.flat"
+                        @input="profileStore.setEditableField($event.target.value, $event.target.name)"
                         >
                 </label>
             </div>
@@ -54,9 +58,10 @@
                     <span>Комментарий</span>
                     <input 
                         type="text" 
-                        name="addr-comment" 
+                        name="comment" 
                         placeholder="Введите комментарий"
                         :value="profileStore.editableAddress.comment"
+                        @input="profileStore.setEditableField($event.target.value, $event.target.name)"
                         >
                 </label>
             </div>
@@ -64,14 +69,22 @@
 
         <div class="address-form__buttons">
             <button type="button" class="button button--transparent">Удалить</button>
-            <button type="submit" class="button">Сохранить</button>
+            <button type="submit" class="button" @click="submitAdderss">Сохранить</button>
         </div>
     </form>
 </template>
 
 <script setup>
+import { defineEmits } from 'vue';
 import { useProfileStore } from '@/store/profile';
 const profileStore = useProfileStore();
+
+const submitAdderss = () => {
+  profileStore.setNewAddress();
+  emit('update:modelValue', false);
+};
+
+const emit = defineEmits(['update:modelValue']);
 
 </script>
 

@@ -1,3 +1,4 @@
+import uniqid from 'uniqid';
 import { defineStore } from 'pinia';
 import addresses from '@/mocks/address';
 import user from '@/mocks/user';
@@ -56,6 +57,17 @@ export const useProfileStore = defineStore('profile', {
         },
 
         setAddressAsEditable (address) {
+            if (!address) {
+                this.editableAddress = {
+                    id: 0,
+                    name: "",
+                    street: "",
+                    building: "",
+                    flat: "",
+                    comment: "",
+                }
+                return;
+            }
             this.editableAddress = {
                 id: address.id,
                 name: address.name,
@@ -66,16 +78,34 @@ export const useProfileStore = defineStore('profile', {
             }
         },
 
-        setAddressName (name) {
-            this.editableAddress.name = name;
-        },
-
-        setAddressStreet(street) {
-            this.editableAddress.street = street;
+        setEditableField (value, field) {
+            this.editableAddress[field] = value;
         },
 
         setNewAddress () {
-
+            this.addresses = this.editableAddress.id 
+                ? this.addresses.map((address) => {
+                    if (address.id === this.editableAddress.id) {
+                        return {
+                            ...address,
+                            ...this.editableAddress,
+                        }
+                    }
+                    return address;
+                })
+                : [...this.addresses, {
+                    ...this.editableAddress,
+                    id: uniqid(),
+                    userId: this.user.id
+                }]
+            this.editableAddress = {
+                id: 0,
+                name: "",
+                street: "",
+                building: "",
+                flat: "",
+                comment: "",
+            }
         }
     },
 });

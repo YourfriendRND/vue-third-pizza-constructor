@@ -15,11 +15,11 @@
     </div>
 
     <div class="layout__address">
-        <user-address v-for="address in profileStore.addresses" :address="address" v-model="page.isEditFormShow"/>
+        <user-address v-for="address in profileStore.addresses" :address="address" :isFormShow="page.isEditFormShow" v-model="page.isEditFormShow" />
     </div>
 
     <div class="layout__address" v-show="page.isEditFormShow">
-      <address-form />
+      <address-form v-model="page.isEditFormShow"/>
     </div>
 
     <div class="layout__button">
@@ -39,6 +39,7 @@ const page = reactive({
 });
 
 const createAddress = () => {
+  profileStore.setAddressAsEditable();
   page.isEditFormShow = true;
 };
 

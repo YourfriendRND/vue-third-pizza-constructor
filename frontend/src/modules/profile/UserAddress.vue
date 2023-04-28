@@ -22,16 +22,22 @@
   const props = defineProps({
     address: {
       type: Object
+    },
+    isFormShow: {
+      type: Boolean
     }
   });
 
-  const emit = defineEmits(['update:modelValue'])
+  const emit = defineEmits(['update:modelValue']);
 
   const getAddressString = (address) => `${address.street}, д. ${address.building} ${address.flat ? ", кв." + address.flat : ""}`;
 
   const editAddress = () => {
+    // if (!props.isFormShow) {
+    //   profileStore.setAddressAsEditable(props.address);
+    // }
     profileStore.setAddressAsEditable(props.address);
-    emit('update:modelValue', true);
+    emit('update:modelValue', !props.isFormShow);
   };
 
 </script>
