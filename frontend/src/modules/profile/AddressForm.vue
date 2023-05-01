@@ -1,7 +1,7 @@
 <template>
     <form action="test.html" method="post" class="address-form address-form--opened sheet" @submit.prevent>
         <div class="address-form__header">
-            <b>{{ profileStore.editableAddress.name }}</b>
+            <b>{{ profileStore.addressName }}</b>
         </div>
 
         <div class="address-form__wrapper">
@@ -66,30 +66,74 @@
                 </label>
             </div>
         </div>
+        <div class="address-form__helpers">
+          <span class="address-form__helpers-text">
+            {{ getValidationFormHelperText() }}
+          </span>
+        </div>
 
         <div class="address-form__buttons">
-            <button type="button" class="button button--transparent">Удалить</button>
-            <button type="submit" class="button" @click="submitAdderss">Сохранить</button>
+            <button type="button" class="button button--transparent" @click="profileStore.deleteAddress(profileStore.editableAddress.id)">Удалить</button>
+            <button 
+              type="submit" 
+              class="button" 
+              @click="profileStore.setNewAddress()"
+              :disabled="isSubmitBtnDisable()"
+              >
+                Сохранить
+              </button>
         </div>
     </form>
 </template>
 
 <script setup>
-import { defineEmits } from 'vue';
 import { useProfileStore } from '@/store/profile';
 const profileStore = useProfileStore();
+ 
+const isSubmitBtnDisable = () => {
+  const name = profileStore.editableAddress.name;
+  const street = profileStore.editableAddress.street;
+  const building = profileStore.editableAddress.building;
 
-const submitAdderss = () => {
-  profileStore.setNewAddress();
-  emit('update:modelValue', false);
+  if (!name || name.length < 3) {
+    return true;
+  }
+
+  if (!street || street.length < 3) {
+    return true;
+  }
+
+  if (!building) {
+    return true;
+  }
+
+  return false;
 };
 
-const emit = defineEmits(['update:modelValue']);
+const getValidationFormHelperText = () => {
+  const name = profileStore.editableAddress.name;
+  const street = profileStore.editableAddress.street;
+  const building = profileStore.editableAddress.building;
+
+  if (!name || name.length < 3) {
+    return 'Добавьте название адреса, название адреса не должно быть коротким (минимум 3 символа)';
+  }
+
+  if (!street || street.length < 3) {
+    return 'Добавьте название улицы, название улицы не должно быть коротким (минимум 3 символа)';
+  }
+
+  if (!building) {
+    return 'Укажите номер дома';
+  }
+
+};
 
 </script>
 
 <style scoped lang="scss">
 @import "@/assets/scss/common.scss";
+
 .address-form {
     $bl: &;
   
@@ -169,5 +213,13 @@ const emit = defineEmits(['update:modelValue']);
   
     border-bottom: 1px solid rgba($green-500, 0.1);
   }
-
+  .address-form__helpers {
+    margin-left: 16px;
+  }
+  
+  .address-form__helpers-text {
+    color: $red-700;
+    font-size: 12px;
+  }
+  
 </style>

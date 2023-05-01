@@ -15,11 +15,11 @@
     </div>
 
     <div class="layout__address">
-        <user-address v-for="address in profileStore.addresses" :address="address" :isFormShow="page.isEditFormShow" v-model="page.isEditFormShow" />
+        <user-address v-for="address in profileStore.addresses" :address="address" />
     </div>
 
-    <div class="layout__address" v-show="page.isEditFormShow">
-      <address-form v-model="page.isEditFormShow"/>
+    <div class="layout__address">
+      <address-form v-show="profileStore.isAddressFormOpen"/>
     </div>
 
     <div class="layout__button">
@@ -27,22 +27,15 @@
     </div>
 </template>
 <script setup>
-import { reactive } from 'vue';
 import { useProfileStore } from '../store/profile';
 import UserAddress from '@/modules/profile/UserAddress.vue';
 import AddressForm from '@/modules/profile/AddressForm.vue';
 
 const profileStore = useProfileStore();
 
-const page = reactive({
-  isEditFormShow: false
-});
-
 const createAddress = () => {
   profileStore.setAddressAsEditable();
-  page.isEditFormShow = true;
 };
-
 
 </script>
 <style scoped lang="scss">

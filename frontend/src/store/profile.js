@@ -7,18 +7,30 @@ export const useProfileStore = defineStore('profile', {
     state: () => ({
         user: user,
         addresses: addresses,
-        currentAddressId: 0,
+        currentAddressId: "",
         editableAddress: {
-            id: 0,
+            id: "",
             name: "",
             street: "",
             building: "",
             flat: "",
             comment: "",
         },
+        isAddressFormOpen: false,
     }),
     
     getters: {
+        addressName (state) {
+            if (!state.currentAddressId) {
+                return '';
+            }
+            const targetAddress = state.addresses.find((address) => address.id === state.currentAddressId);
+            if (targetAddress) {
+                return targetAddress.name;
+            }
+            return '';
+        },
+
         street (state) {
             if (!state.currentAddressId) {
                 return '';
@@ -29,6 +41,7 @@ export const useProfileStore = defineStore('profile', {
             }
             return '';
         },
+
         flat (state) {
             if (!state.currentAddressId) {
                 return '';
@@ -39,6 +52,7 @@ export const useProfileStore = defineStore('profile', {
             }
             return '';
         },
+
         building (state) {
             if (!state.currentAddressId) {
                 return '';
@@ -57,9 +71,11 @@ export const useProfileStore = defineStore('profile', {
         },
 
         setAddressAsEditable (address) {
-            if (!address) {
+            this.isAddressFormOpen = address && address.id === this.currentAddressId ? false : true
+            if (!address || !this.isAddressFormOpen) {
+                this.currentAddressId = "";
                 this.editableAddress = {
-                    id: 0,
+                    id: "",
                     name: "",
                     street: "",
                     building: "",
@@ -68,13 +84,16 @@ export const useProfileStore = defineStore('profile', {
                 }
                 return;
             }
-            this.editableAddress = {
-                id: address.id,
-                name: address.name,
-                street: address.street,
-                building: address.building,
-                flat: address.flat,
-                comment: address.comment,
+            if (address && this.isAddressFormOpen) {
+                this.currentAddressId = address.id;
+                this.editableAddress = {
+                    id: address.id,
+                    name: address.name,
+                    street: address.street,
+                    building: address.building,
+                    flat: address.flat,
+                    comment: address.comment,
+                }
             }
         },
 
@@ -98,14 +117,33 @@ export const useProfileStore = defineStore('profile', {
                     id: uniqid(),
                     userId: this.user.id
                 }]
+            this.isAddressFormOpen = false;
+            this.currentAddressId = "";
             this.editableAddress = {
-                id: 0,
+                id: "",
                 name: "",
                 street: "",
                 building: "",
                 flat: "",
                 comment: "",
             }
+        },
+
+        deleteAddress (addressId) {
+            if (addressId) {
+                this.addresses = this.addresses.filter((address) => address.id !== addressId);
+            }
+            this.isAddressFormOpen = false;
+            this.currentAddressId = "";
+            this.editableAddress = {
+                id: "",
+                name: "",
+                street: "",
+                building: "",
+                flat: "",
+                comment: "",
+            }
+
         }
     },
 });
