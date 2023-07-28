@@ -3,7 +3,7 @@
         <div class="address-form__header">
             <b>{{ address.name }}</b>
             <div class="address-form__edit">
-                <button type="button" class="icon" @click="editAddress">
+                <button type="button" class="icon" @click="editAddressClickHandler" @keyup.esc="editAddressKeyupHandler">
                   <span class="visually-hidden">Изменить адрес</span>
                 </button>
             </div>
@@ -27,7 +27,14 @@
 
   const getAddressString = (address) => `${address.street}, д. ${address.building} ${address.flat ? ", кв." + address.flat : ""}`;
 
-  const editAddress = () => {
+  const editAddressKeyupHandler = (evt) => {
+    if (evt.type === 'keyup' && profileStore.isAddressFormOpen) {
+      profileStore.setAddressAsEditable(props.address);
+      evt.target.blur();
+    }
+  };
+
+  const editAddressClickHandler = () => {
     profileStore.setAddressAsEditable(props.address);
   };
 

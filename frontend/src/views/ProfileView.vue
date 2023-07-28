@@ -19,11 +19,11 @@
     </div>
 
     <div class="layout__address">
-      <address-form v-show="profileStore.isAddressFormOpen"/>
+      <address-form v-show="profileStore.isAddressFormOpen" :closeHandler="editAddressKeyupHandler" />
     </div>
 
     <div class="layout__button">
-      <button type="button" class="button button--border" @click="createAddress">Добавить новый адрес</button>
+      <button type="button" class="button button--border" @keyup.esc="editAddressKeyupHandler" @click="createAddress">Добавить новый адрес</button>
     </div>
 </template>
 <script setup>
@@ -33,8 +33,16 @@ import AddressForm from '@/modules/profile/AddressForm.vue';
 
 const profileStore = useProfileStore();
 
-const createAddress = () => {
+const createAddress = (evt) => {
   profileStore.setAddressAsEditable();
+  evt.target.focus();
+};
+
+const editAddressKeyupHandler = (evt) => {
+  if (evt.type === 'keyup' && profileStore.isAddressFormOpen ) {
+    profileStore.setAddressAsEditable();
+    profileStore.isAddressFormOpen = false;
+  }
 };
 
 </script>

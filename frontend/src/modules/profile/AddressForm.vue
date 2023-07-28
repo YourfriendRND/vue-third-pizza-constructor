@@ -1,5 +1,5 @@
 <template>
-    <form action="test.html" method="post" class="address-form address-form--opened sheet" @submit.prevent>
+    <form action="test.html" method="post" class="address-form address-form--opened sheet" @keyup.esc="closeHandler" @click="log" @submit.prevent>
         <div class="address-form__header">
             <b>{{ profileStore.addressName }}</b>
         </div>
@@ -87,8 +87,15 @@
 </template>
 
 <script setup>
+import { defineProps } from 'vue';
 import { useProfileStore } from '@/store/profile';
 const profileStore = useProfileStore();
+
+const props = defineProps({
+  closeHandler: {
+    type: Function
+  },
+});
  
 const isSubmitBtnDisable = () => {
   const name = profileStore.editableAddress.name;
