@@ -1,17 +1,17 @@
 <template>
     <div class="layout__title">
-        <h1 class="title title--big">Мои данные</h1>
+      <h1 class="title title--big">Мои данные</h1>
     </div>
 
     <div class="user">
-        <picture>
-            <source type="image/webp" :srcset="profileStore.user.avatar + '@2x.webp 1x,' + ' '+ profileStore.user.avatar + '@4x.webp 2x'">
-            <img :src="profileStore.user.avatar + '@2x.jpg'" :srcset="profileStore.user.avatar + '@4x.jpg'" alt="Василий Ложкин" width="72" height="72">
-        </picture>
-        <div class="user__name">
-            <span>{{ profileStore.user.name }}</span>
-        </div>
-        <p class="user__phone">Контактный телефон: <span>{{ profileStore.user.phone }}</span></p>
+      <picture>
+          <source type="image/webp" :srcset="profileStore.user.avatar + '@2x.webp 1x,' + ' '+ profileStore.user.avatar + '@4x.webp 2x'">
+          <img :src="profileStore.user.avatar + '@2x.jpg'" :srcset="profileStore.user.avatar + '@4x.jpg'" alt="Василий Ложкин" width="72" height="72">
+      </picture>
+      <div class="user__name">
+          <span>{{ profileStore.user.name }}</span>
+      </div>
+      <p class="user__phone">Контактный телефон: <span>{{ profileStore.user.phone }}</span></p>
     </div>
 
     <div class="layout__address">
@@ -25,11 +25,14 @@
     <div class="layout__button">
       <button type="button" class="button button--border" @keyup.esc="editAddressKeyupHandler" @click="createAddress">Добавить новый адрес</button>
     </div>
+    <delete-modal v-if="profileStore.isDeleteModalShow"></delete-modal>
+
 </template>
 <script setup>
 import { useProfileStore } from '../store/profile';
 import UserAddress from '@/modules/profile/UserAddress.vue';
 import AddressForm from '@/modules/profile/AddressForm.vue';
+import DeleteModal from '@/modules/profile/DeleteModal.vue';
 
 const profileStore = useProfileStore();
 
@@ -61,7 +64,7 @@ const editAddressKeyupHandler = (evt) => {
     display: flex;
     align-items: center;
     flex-wrap: wrap;
-  
+
     margin-bottom: 33px;
   }
   

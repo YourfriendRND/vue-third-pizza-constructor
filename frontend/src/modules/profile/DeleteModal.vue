@@ -1,33 +1,32 @@
 <template>
 <div class="sign-form">
-    <router-link :to="{name: 'home'}" class="close close--white">
-        <span class="visually-hidden">Закрыть форму авторизации</span>
-    </router-link>
     <div class="sign-form__title">
-        <h1 class="title title--small">Авторизуйтесь на сайте</h1>
+        <h1 class="title title--small">Действительно удалить {{ addressName }}?</h1>
     </div>
-    <form action="test.html" method="post">
-        <div class="sign-form__input">
-            <label class="input">
-                <span>E-mail</span>
-                <input type="email" name="email" placeholder="example@mail.ru">
-            </label>
-        </div>
-
-        <div class="sign-form__input">
-            <label class="input">
-                <span>Пароль</span>
-                <input type="password" name="pass" placeholder="***********">
-            </label>
-        </div>
-        <button type="submit" class="button">Авторизоваться</button>
-    </form>
+    <div class="delete-modal__controller">
+        <button type="button" class="button">Да, удалить</button>
+        <button type="button" class="button" @click="cancelDeleteAddress">Нет, передумал</button>
+    </div>
 </div>
 </template>
-<script></script>
+
+<script setup>
+  import { useProfileStore } from '@/store/profile';
+  const profileStore = useProfileStore();
+  const addressName = profileStore.editableAddress.name;
+
+  const cancelDeleteAddress = () => {
+    profileStore.isDeleteModalShow = false;
+  };
+  
+</script>
+
 <style scoped lang="scss">
 @import '@/assets/scss/mixins/mixins.scss';
     @import '@/assets/scss/ds-system/ds.scss';
+    .delete-modal__controller {
+      display: flex
+    }
     .sign-form {
         @include pf_center-all;
 

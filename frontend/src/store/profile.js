@@ -17,6 +17,7 @@ export const useProfileStore = defineStore('profile', {
             comment: "",
         },
         isAddressFormOpen: false,
+        isDeleteModalShow: false,
     }),
     
     getters: {

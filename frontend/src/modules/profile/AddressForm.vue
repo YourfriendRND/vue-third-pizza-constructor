@@ -73,7 +73,7 @@
         </div>
 
         <div class="address-form__buttons">
-            <button type="button" class="button button--transparent" @click="profileStore.deleteAddress(profileStore.editableAddress.id)">Удалить</button>
+            <button type="button" class="button button--transparent" @click="deleteAdderssHandler">Удалить</button>
             <button 
               type="submit" 
               class="button" 
@@ -90,6 +90,14 @@
 import { defineProps } from 'vue';
 import { useProfileStore } from '@/store/profile';
 const profileStore = useProfileStore();
+
+const deleteAdderssHandler = () => {
+  console.log(profileStore.editableAddress.id);
+  // profileStore.deleteAddress(profileStore.editableAddress.id);
+  if (profileStore.editableAddress.id && !profileStore.isDeleteModalShow) {
+    profileStore.isDeleteModalShow = true;
+  }
+};
 
 const props = defineProps({
   closeHandler: {
