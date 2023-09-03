@@ -6,14 +6,8 @@
                 <span class="cart-form__label">Получение заказа:</span>
 
                 <select name="delivery" class="select" @change="changeDelivery">
-                    <option :value="DeliveryTypes.Self" @click="setDeliveryAddressId" :selected="DeliveryTypes.Self === cartStore.deliveryType" id="0">Заберу сам</option>
-                    <option :value="DeliveryTypes.New" @click="setDeliveryAddressId" :selected="DeliveryTypes.New === cartStore.deliveryType" id="0">Новый адрес</option>
-                    <option v-for="address in profileStore.addresses"
-                        :selected="DeliveryTypes.Address === cartStore.deliveryType && address.id === Number(profileStore.currentAddressId)" 
-                        @click="setDeliveryAddressId" 
-                        :id="address.id" 
-                        :value="DeliveryTypes.Address">
-                        {{ address.name }}
+                    <option v-for="{id, name} in deliveryCases" :value="id">
+                        {{ name }}
                     </option>
                 </select>
             </label>
@@ -23,9 +17,9 @@
                 <input 
                     type="text" 
                     name="tel" 
-                    placeholder="+7 999-999-99-99" 
-                    @input="cartStore.setPhone($event.target.value)"
+                    placeholder="+7 999-999-99-99"
                     :value="cartStore.phone"
+                    @input="cartStore.setPhone($event.target.value)"
                 >
             </label>
 
@@ -76,19 +70,26 @@
 </template>
 
 <script setup>
-import { DeliveryTypes } from '@/common/constants';
+import { DeliveryTypes, DefaultDeliveryCases } from '@/common/constants';
 import { useCartStore } from '@/store/cart';
 import { useProfileStore } from '@/store/profile';
 
 const cartStore = useCartStore();
 const profileStore = useProfileStore();
 
-const changeDelivery = ($event) => {
-    cartStore.setDeliveryType($event.target.value);
-};
+const deliveryCases = [
+    ...DefaultDeliveryCases, 
+    ...profileStore.addresses.map(({id, name}) => ({
+    id,
+    name,
+    type: DeliveryTypes.Address,
+}))]
 
-const setDeliveryAddressId = ($event) => {
-    profileStore.setAddressId($event.target.id);
+
+const changeDelivery = ($event) => {
+    const targetCase = deliveryCases.find((item) => String(item.id) === $event.target.value);
+    cartStore.setDeliveryType(targetCase.type);
+    profileStore.setAddressId(targetCase.id ? targetCase.id : profileStore.nextAddressId);
     cartStore.setStreet(profileStore.street);
     cartStore.setFlat(profileStore.flat);
     cartStore.setBuilding(profileStore.building);

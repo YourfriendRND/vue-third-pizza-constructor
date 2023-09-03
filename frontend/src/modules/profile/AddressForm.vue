@@ -92,11 +92,13 @@ import { useProfileStore } from '@/store/profile';
 const profileStore = useProfileStore();
 
 const deleteAdderssHandler = () => {
-  console.log(profileStore.editableAddress.id);
-  // profileStore.deleteAddress(profileStore.editableAddress.id);
   if (profileStore.editableAddress.id && !profileStore.isDeleteModalShow) {
     profileStore.isDeleteModalShow = true;
+    
+    return;
   }
+
+  profileStore.isAddressFormOpen = false;
 };
 
 const props = defineProps({

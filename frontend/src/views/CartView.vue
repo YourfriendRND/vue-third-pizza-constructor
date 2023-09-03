@@ -1,18 +1,16 @@
 <template>
-    <form action="test.html" method="post" class="layout-form">
+    <form action="test.html" method="post" class="layout-form" @submit.prevent  @submit="submitHandler">
         <main class="content cart">
             <div class="container">
                 <div class="cart__title">
                     <h1 class="title title--big">Корзина</h1>
                 </div>
 
-                <div class="sheet cart__empty" v-if="!cartStore.pizzas.length">
-                    <p>В корзине нет ни одного товара</p>
-                </div>
+                <list-empty v-if="!cartStore.pizzas.length" />
 
                 <div class="cart__container" v-else>
                     <ul class="cart-list sheet" >
-                        <order-item v-for="order in cartStore.pizzas"
+                        <order-item-cart v-for="order in cartStore.pizzas"
                             :order="order"
                         />
                     </ul>
@@ -41,18 +39,54 @@
             </div>
 
             <div class="footer__submit">
-                <button type="submit" class="button" :disabled="!cartStore.isOrderAvailabale">Оформить заказ</button>
+                <button 
+                  type="submit" 
+                  class="button" 
+                  :disabled="!cartStore.isOrderAvailabale"
+                >
+                  Оформить заказ
+                </button>
             </div>
         </section>
     </form>
 </template>
 <script setup>
-import OrderItem from '@/modules/cart/OrderItem.vue';
+import { DeliveryTypes } from '@/common/constants';
+import OrderItemCart from '@/modules/cart/OrderItemCart.vue';
 import AdditionalOrderItem from '@/modules/cart/AdditionalOrderItem.vue';
 import AddressForm from '@/modules/cart/AddressForm.vue';
+import ListEmpty from '@/common/components/ListEmpty.vue';
 import { useCartStore } from '@/store/cart';
+import { useOrderStore } from '@/store/orders';
+import { useProfileStore } from '../store/profile';
+import { useRouter } from 'vue-router';
 
 const cartStore = useCartStore();
+const orderStore = useOrderStore();
+const profileStore = useProfileStore();
+const router = useRouter();
+
+const submitHandler = ($event) => {
+  $event.preventDefault();
+  
+  if (cartStore.deliveryType === DeliveryTypes.New) {
+    profileStore.addNewAddress(cartStore.address);
+  }
+
+  orderStore.addOrder({
+    deliveryType: cartStore.deliveryType,
+    clientPhone: cartStore.phone,
+    addressId: profileStore.currentAddressId,
+    address: profileStore.addressName,
+    pizzas: [...cartStore.pizzas],
+    misc: [...cartStore.misc],
+    price: cartStore.orderPrice
+  });
+
+  cartStore.initStore();
+  
+  router.push('/user/orders');
+}
 
 </script>
 <style scoped lang="scss">

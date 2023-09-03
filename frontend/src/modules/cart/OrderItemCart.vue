@@ -3,14 +3,7 @@
     <li class="cart-list__item">
         <div class="product cart-list__product">
             <img :src="getImage('product.svg')" class="product__img" width="56" height="56" :alt="order.name">
-            <div class="product__text">
-                <h2>{{ order.name }}</h2>
-                <ul>
-                    <li>{{ order.size.name }}, на {{ order.dough.value === 'large' ? 'толстом' : 'тонком'}} тесте</li>
-                    <li>Соус: {{ order.sauce.name }}</li>
-                    <li>Начинка: {{ getFillingsText(order.ingredients) }}</li>
-                </ul>
-            </div>
+            <product-text :pizza="order" />
         </div>
         <app-counter 
             class="counter cart-list__counter" 
@@ -24,7 +17,13 @@
         </div>
 
         <div class="cart-list__button">
-            <button type="button" class="cart-list__edit" @click="changePizzaOrder">Изменить</button>
+            <button 
+                type="button" 
+                class="cart-list__edit" 
+                @click="changePizzaOrder"
+            >
+                Изменить
+            </button>
         </div>
     </li>
 </template>
@@ -33,12 +32,11 @@
 import { getImage } from '@/common/helpers/normalize';
 import { defineProps, reactive, watch } from 'vue';
 import AppCounter from '@/common/components/AppCounter.vue'
-import { useDataStore } from '@/store/data';
+import ProductText from '@/common/components/ProductText.vue';
 import { useCartStore } from '@/store/cart';
 import { usePizzaStore } from '@/store/pizza';
 import { useRouter } from 'vue-router';
 
-const dataStore = useDataStore();
 const cartStore = useCartStore();
 const pizzaStore = usePizzaStore();
 const router = useRouter();
@@ -63,32 +61,6 @@ const changePizzaOrder = () => {
     router.push({name: 'home'});
 };
 
-const convertIngredients = (ingredients) => {
-    return ingredients.map((ingredient) => {
-        const targetIngredient = dataStore.ingredients.find((ing) => {
-            return ing.value === ingredient;
-        });
-        return targetIngredient.name;
-    }).reduce((acc, filling) => {
-        if (acc[filling]) {
-            acc[filling] = acc[filling] + 1;
-            return acc;
-        }
-        acc[filling] = 1;
-        return acc;
-    }, {});
-};
-
-const getFillingsText = (ingredients) => {
-    const filling = convertIngredients(ingredients);
-    return Object.keys(filling).map((item) => {
-        if (filling[item] > 1) {
-            return `${item} x${filling[item]}`;
-        }
-        return item; 
-    }).join(', ')
-}
-
 const orderCounter = reactive({
     pizza: {
         index: props.order.index,
@@ -109,22 +81,6 @@ watch(orderCounter.pizza, () => {
 .product {
     display: flex;
     align-items: center;
-}
-
-.product__text {
-    margin-left: 15px;
-
-    h2 {
-        @include b-s18-h21;
-
-        margin-top: 0;
-        margin-bottom: 10px;
-    }
-
-    ul {
-        @include clear-list;
-        @include l-s11-h13;
-    }
 }
 
 .cart-list__item {

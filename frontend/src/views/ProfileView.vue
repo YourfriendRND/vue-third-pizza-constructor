@@ -25,14 +25,19 @@
     <div class="layout__button">
       <button type="button" class="button button--border" @keyup.esc="editAddressKeyupHandler" @click="createAddress">Добавить новый адрес</button>
     </div>
-    <delete-modal v-if="profileStore.isDeleteModalShow"></delete-modal>
+    <delete-modal
+      v-if="profileStore.isDeleteModalShow" 
+      :entityName="profileStore.editableAddress.name"
+      :agreeHandler="profileStore.deleteAddress"
+      :cancelHandler="profileStore.closeDeleteModal"
+    />
 
 </template>
 <script setup>
 import { useProfileStore } from '../store/profile';
 import UserAddress from '@/modules/profile/UserAddress.vue';
 import AddressForm from '@/modules/profile/AddressForm.vue';
-import DeleteModal from '@/modules/profile/DeleteModal.vue';
+import DeleteModal from '@/common/components/DeleteModal.vue';
 
 const profileStore = useProfileStore();
 
