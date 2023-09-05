@@ -2,49 +2,75 @@
 <template>
     <li class="cart-list__item">
         <div class="product cart-list__product">
-            <img :src="getImage('product.svg')" class="product__img" width="56" height="56" alt="Любимая пицца">
-            <div class="product__text">
-                <h2>Любимая пицца</h2>
-                <ul>
-                    <li>30 см, на тонком тесте</li>
-                    <li>Соус: томатный</li>
-                    <li>Начинка: грибы, лук, ветчина, пармезан, ананас, бекон, блю чиз</li>
-                </ul>
-            </div>
+            <img :src="getImage('product.svg')" class="product__img" width="56" height="56" :alt="order.name">
+            <product-text :pizza="order" />
         </div>
         <app-counter 
             class="counter cart-list__counter" 
             :isOrange="true" 
-            :modelValue="orderCounter.value"
-            v-model="orderCounter.value"
+            :modelValue="orderCounter.pizza.count"
+            v-model="orderCounter.pizza.count"
         />
 
         <div class="cart-list__price">
-            <b>782 ₽</b>
+            <b>{{ order.price }}</b>
         </div>
 
         <div class="cart-list__button">
-            <button type="button" class="cart-list__edit">Изменить</button>
+            <button 
+                type="button" 
+                class="cart-list__edit" 
+                @click="changePizzaOrder"
+            >
+                Изменить
+            </button>
         </div>
     </li>
 </template>
 
 <script setup>
 import { getImage } from '@/common/helpers/normalize';
-import { defineProps, reactive } from 'vue';
+import { defineProps, reactive, watch } from 'vue';
 import AppCounter from '@/common/components/AppCounter.vue'
+import ProductText from '@/common/components/ProductText.vue';
+import { useCartStore } from '@/store/cart';
+import { usePizzaStore } from '@/store/pizza';
+import { useRouter } from 'vue-router';
 
-defineProps({
+const cartStore = useCartStore();
+const pizzaStore = usePizzaStore();
+const router = useRouter();
+
+const props = defineProps({
     order: {
         type: Object,
-        default: {}
+        default: () => {}
     }
 });
 
+const changePizzaOrder = () => {
+    pizzaStore.setPizza({
+        index: props.order.index,
+        name: props.order.name,
+        sauceId: props.order.sauce.id,
+        doughId: props.order.dough.id,
+        sizeId: props.order.size.id,
+        ingredients: props.order.ingredients,
+        price: props.order.price,
+    })
+    router.push({name: 'home'});
+};
+
 const orderCounter = reactive({
-    value: 0
+    pizza: {
+        index: props.order.index,
+        count: props.order.count,
+    },
 });
 
+watch(orderCounter.pizza, () => {
+    cartStore.updatePizza({...orderCounter.pizza});
+});
 
 </script>
 
@@ -55,22 +81,6 @@ const orderCounter = reactive({
 .product {
     display: flex;
     align-items: center;
-}
-
-.product__text {
-    margin-left: 15px;
-
-    h2 {
-        @include b-s18-h21;
-
-        margin-top: 0;
-        margin-bottom: 10px;
-    }
-
-    ul {
-        @include clear-list;
-        @include l-s11-h13;
-    }
 }
 
 .cart-list__item {

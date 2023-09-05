@@ -1,71 +1,31 @@
 <template>
-    <form action="test.html" method="post" class="layout-form">
+    <form action="test.html" method="post" class="layout-form" @submit.prevent  @submit="submitHandler">
         <main class="content cart">
             <div class="container">
                 <div class="cart__title">
                     <h1 class="title title--big">Корзина</h1>
                 </div>
 
-                <!-- <div class="sheet cart__empty">
-              <p>В корзине нет ни одного товара</p>
-            </div> -->
+                <list-empty v-if="!cartStore.pizzas.length" />
 
-                <ul class="cart-list sheet">
-                    <order-item />
-                    <order-item />
-                </ul>
-
-                <div class="cart__additional">
-                    <ul class="additional-list">
-                        <additional-order-item />
-                        <additional-order-item />
-                        <additional-order-item />
+                <div class="cart__container" v-else>
+                    <ul class="cart-list sheet" >
+                        <order-item-cart v-for="order in cartStore.pizzas"
+                            :order="order"
+                        />
                     </ul>
-                </div>
-
-                <div class="cart__form">
-                    <div class="cart-form">
-
-                        <label class="cart-form__select">
-                            <span class="cart-form__label">Получение заказа:</span>
-
-                            <select name="test" class="select">
-                                <option value="1">Заберу сам</option>
-                                <option value="2">Новый адрес</option>
-                                <option value="3">Дом</option>
-                            </select>
-                        </label>
-
-                        <label class="input input--big-label">
-                            <span>Контактный телефон:</span>
-                            <input type="text" name="tel" placeholder="+7 999-999-99-99">
-                        </label>
-
-                        <div class="cart-form__address">
-                            <span class="cart-form__label">Новый адрес:</span>
-
-                            <div class="cart-form__input">
-                                <label class="input">
-                                    <span>Улица*</span>
-                                    <input type="text" name="street">
-                                </label>
-                            </div>
-
-                            <div class="cart-form__input cart-form__input--small">
-                                <label class="input">
-                                    <span>Дом*</span>
-                                    <input type="text" name="house">
-                                </label>
-                            </div>
-
-                            <div class="cart-form__input cart-form__input--small">
-                                <label class="input">
-                                    <span>Квартира</span>
-                                    <input type="text" name="apartment">
-                                </label>
-                            </div>
-                        </div>
+    
+                    <div class="cart__additional">
+                        <ul class="additional-list" >
+                            <additional-order-item 
+                            v-for="item in cartStore.misc" 
+                            :misc="item"
+                            />
+                        </ul>
                     </div>
+    
+                    <address-form />
+
                 </div>
             </div>
         </main>
@@ -75,22 +35,58 @@
             </div>
             <p class="footer__text">Перейти к конструктору<br>чтоб собрать ещё одну пиццу</p>
             <div class="footer__price">
-                <b>Итого: 2 228 ₽</b>
+                <b>Итого: {{ cartStore.orderPrice }} ₽</b>
             </div>
 
             <div class="footer__submit">
-                <button type="submit" class="button">Оформить заказ</button>
+                <button 
+                  type="submit" 
+                  class="button" 
+                  :disabled="!cartStore.isOrderAvailabale"
+                >
+                  Оформить заказ
+                </button>
             </div>
         </section>
     </form>
 </template>
 <script setup>
-import OrderItem from '@/modules/cart/OrderItem.vue';
-import AdditionalOrderItem from '../modules/cart/AdditionalOrderItem.vue';
+import { DeliveryTypes } from '@/common/constants';
+import OrderItemCart from '@/modules/cart/OrderItemCart.vue';
+import AdditionalOrderItem from '@/modules/cart/AdditionalOrderItem.vue';
+import AddressForm from '@/modules/cart/AddressForm.vue';
+import ListEmpty from '@/common/components/ListEmpty.vue';
 import { useCartStore } from '@/store/cart';
+import { useOrderStore } from '@/store/orders';
+import { useProfileStore } from '../store/profile';
+import { useRouter } from 'vue-router';
 
 const cartStore = useCartStore();
+const orderStore = useOrderStore();
+const profileStore = useProfileStore();
+const router = useRouter();
 
+const submitHandler = ($event) => {
+  $event.preventDefault();
+  
+  if (cartStore.deliveryType === DeliveryTypes.New) {
+    profileStore.addNewAddress(cartStore.address);
+  }
+
+  orderStore.addOrder({
+    deliveryType: cartStore.deliveryType,
+    clientPhone: cartStore.phone,
+    addressId: profileStore.currentAddressId,
+    address: profileStore.addressName,
+    pizzas: [...cartStore.pizzas],
+    misc: [...cartStore.misc],
+    price: cartStore.orderPrice
+  });
+
+  cartStore.initStore();
+  
+  router.push('/user/orders');
+}
 
 </script>
 <style scoped lang="scss">
@@ -119,49 +115,6 @@ const cartStore = useCartStore();
 
 .cart__empty {
     padding: 20px 30px;
-}
-
-
-.cart-form {
-    display: flex;
-    align-items: center;
-    flex-wrap: wrap;
-}
-
-.cart-form__select {
-    display: flex;
-    align-items: center;
-
-    margin-right: auto;
-
-    span {
-        margin-right: 16px;
-    }
-}
-
-.cart-form__label {
-    @include b-s16-h19;
-
-    white-space: nowrap;
-}
-
-.cart-form__address {
-    display: flex;
-    align-items: center;
-
-    width: 100%;
-    margin-top: 20px;
-}
-
-.cart-form__input {
-    flex-grow: 1;
-
-    margin-bottom: 20px;
-    margin-left: 16px;
-
-    &--small {
-        max-width: 120px;
-    }
 }
 
 .cart-list {

@@ -24,6 +24,7 @@ export const useDataStore = defineStore('data', {
         getIngredients: state => state.ingredients,
         getSause: state => state.sauces,
         getSizes: state => state.sizes,
+        getMisc: state => state.misc,
     },
     actions: {},
 });

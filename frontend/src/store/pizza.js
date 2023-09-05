@@ -56,6 +56,16 @@ export const usePizzaStore = defineStore('pizza', {
             this.price = 0;
         },
 
+        setPizza (pizza) {
+            this.index = pizza.index;
+            this.name = pizza.name;
+            this.sauceId = pizza.sauceId;
+            this.doughId = pizza.doughId,
+            this.sizeId = pizza.sizeId;
+            this.ingredients = [...pizza.ingredients],
+            this.price = pizza.price;
+        },
+
     },
     getters: {   
         activeSauce: state => {
@@ -109,12 +119,12 @@ export const usePizzaStore = defineStore('pizza', {
 
         pizza (state) {
             return {
-                index: uniqid(),
+                index: state.index ? state.index : uniqid(),
                 name: state.name,
                 dough: this.activeDough,
                 sauce: this.activeSauce,
                 size: this.activeSize,
-                ingredientts: state.ingredients,
+                ingredients: state.ingredients,
                 price: this.totalPrice,     
             }
         },

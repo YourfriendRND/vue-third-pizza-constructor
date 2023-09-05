@@ -1,19 +1,19 @@
 <template>
     <li class="additional-list__item sheet">
         <p class="additional-list__description">
-            <img :src="getImage('cola.svg')" width="39" height="60" alt="Coca-Cola 0,5 литра">
-            <span>Coca-Cola 0,5 литра</span>
+            <img :src="getImage(`${misc.image}.svg`)" width="39" height="60" :alt="misc.name">
+            <span>{{ misc.name }}</span>
         </p>
 
         <div class="additional-list__wrapper">
             <app-counter class="counter additional-list__counter"
                 :isOrange="true"
-                :modelValue="counter.value"
-                v-model="counter.value"
+                :modelValue="counter.misc.count"
+                v-model="counter.misc.count"
             />
 
             <div class="additional-list__price">
-                <b>× 56 ₽</b>
+                <b>× {{ misc.price }}</b>
             </div>
         </div>
     </li>
@@ -22,12 +22,28 @@
 <script setup>
 import AppCounter from '@/common/components/AppCounter.vue';
 import { getImage } from '@/common/helpers/normalize';
-import {reactive} from 'vue';
+import { defineProps, reactive, watch } from 'vue';
+import { useCartStore } from "@/store/cart";
+
+const cartStore = useCartStore();
+
+const props = defineProps({
+    misc: {
+        type: Object,
+        default: () => {},
+    }
+});
 
 const counter = reactive({
-    value: 0
-})
+    misc: {
+        name: props.misc.name,
+        count: props.misc.count
+    }
+});
 
+watch(counter.misc, () => {
+    cartStore.updateMisc({...counter.misc});
+});
 
 </script>
 
