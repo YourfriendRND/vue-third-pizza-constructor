@@ -35,3 +35,11 @@ export const DefaultDeliveryCases = [
         type: DeliveryTypes.New
     }
 ]
+
+export const HttpMethods = {
+    Get: 'GET',
+    Post: 'POST',
+    Patch: 'PATCH',
+    Put: 'PUT',
+    Delete: 'DELETE',
+}
