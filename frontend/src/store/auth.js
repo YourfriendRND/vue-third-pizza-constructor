@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia';
-import authService from '../services/auth-service';
-import { removeToken, saveToken } from '../services/token-manager';
+import authService from '@/services/auth-service';
+import { removeToken, saveToken } from '@/services/token-manager';
 
 export const useAuthStore = defineStore('suth', {
     state: () => ({
@@ -25,7 +25,7 @@ export const useAuthStore = defineStore('suth', {
         async login(email, password) {
             try {
                 const user = await authService.login(email, password)
-                saveToken(user.tokken);
+                saveToken(user.token);
                 return 'user has been login';
             } catch (err) {
                 throw Error(err);

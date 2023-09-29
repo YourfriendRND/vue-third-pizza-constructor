@@ -1,5 +1,5 @@
+import httpProvider from '@/services/providers/index';
 import { HttpClientAbstract } from './HttpClient';
-import httpProvider from './providers';
 import { getToken } from './token-manager';
 
 class AuthService extends HttpClientAbstract {

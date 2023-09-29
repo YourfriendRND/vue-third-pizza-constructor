@@ -9,6 +9,7 @@ export class HttpClientAbstract {
             throw Error(`[${new.target.name}]: baseURL option is empty, please set it`);
         }
 
+        console.log(options)
         this.httpProvider = options.provider;
         this.baseURL = options.baseURL;
         this.getToken = options.getToken;
@@ -41,7 +42,7 @@ export class HttpClientAbstract {
 
     async get (path, options) {
 		this.checkPath(path);
-		return this.httpProvider.get(path, this.buildRequest(options));
+		return await this.httpProvider.get(path, this.buildRequest(options));
 	};
 	
 	async post (path, options) {
